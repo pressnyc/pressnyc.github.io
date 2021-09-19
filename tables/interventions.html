@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>New York City COVID-19 Classroom Interventions</title>
+  
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.2/css/dataTables.bootstrap5.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.0.0/css/buttons.bootstrap5.min.css">
+
+  <style>
+  div.dataTables_wrapper div.dataTables_paginate {
+    text-align: center; 
+    margin: 2rem 0; 
+  }
+  .paginate_button {
+    padding: 10px;
+    border: 1px solid;
+    border-radius: 4px;
+    min-width: 2.5rem;
+    display: inline-block;
+    text-align: center;
+    margin: 5px;
+    cursor: pointer;
+  }
+  </style>
+  
+</head>
+<body>
+<div class="container">
+
+
+<h1 class="my-5 fs-3">New York City COVID-19 Classroom Interventions</h1>
+
+<table id="table" class="table table-striped table-bordered" style="width:100%">
+    <thead>
+        <tr>
+        <th>Intervention Type</th>
+        <th>Building Address</th>
+        <th>Building Name</th>
+        <th>Borough</th>
+        <th>School District</th>
+        <th>Intervention Start Date</th>
+        <th>Site Name</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+
+</div>
+
+
+<script>
+
+window.onload = function () {
+
+  var jqxhr = $.ajax( "https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/activeinterventioncases.json" )
+    .done(function(data) {
+
+      data = JSON.parse(data);
+
+      var tbl_body = "";
+      var odd_even = false;
+      $.each(data, function() {
+          var tbl_row = "";
+
+          tbl_row += "<td>"+this['nycsr_admininterventiontype@OData.Community.Display.V1.FormattedValue']+"</td>";
+          tbl_row += "<td>"+this['nycsr_building.nycsr_address']+"</td>";
+          tbl_row += "<td>"+this['nycsr_building.nycsr_buildingname']+"</td>";
+          tbl_row += "<td>"+this['nycsr_building.nycsr_borough@OData.Community.Display.V1.FormattedValue']+"</td>";
+          tbl_row += "<td>"+this['nycsr_building.nycsr_geographicaldistrictcode']+"</td>";
+          tbl_row += "<td>"+this['nycsr_interventionstartdate@OData.Community.Display.V1.FormattedValue']+"</td>";
+          tbl_row += "<td>"+this['nycsr_locationsite.nycsr_sitename']+"</td>";
+
+          tbl_body += "<tr class=\""+( odd_even ? "odd" : "even")+"\">"+tbl_row+"</tr>";
+          odd_even = !odd_even;               
+      });
+      $("#table tbody").html(tbl_body);
+      $('#table').DataTable({"pageLength": 50});
+
+    })
+    .fail(function() {
+      alert( "error" );
+    })
+    .always(function() {
+    });
+}
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+</body>
+</html>

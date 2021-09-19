@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>New York City COVID-19 Testing in Schools</title>
+  
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.2/css/dataTables.bootstrap5.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.0.0/css/buttons.bootstrap5.min.css">
+
+
+  <style>
+  div.dataTables_wrapper div.dataTables_paginate {
+    text-align: center; 
+    margin: 2rem 0; 
+  }
+  .paginate_button {
+    padding: 10px;
+    border: 1px solid;
+    border-radius: 4px;
+    min-width: 2.5rem;
+    display: inline-block;
+    text-align: center;
+    margin: 5px;
+    cursor: pointer;
+  }
+  </style>
+  
+</head>
+<body>
+<div class="container">
+
+
+<h1 class="my-5 fs-3">New York City COVID-19 Testing in Schools</h1>
+
+<table id="table" class="table table-striped table-bordered" style="width:100%">
+    <thead>
+        <tr>
+          <Th>Borough</Th>
+          <Th>Date of Test</Th>
+          <Th>DBN</Th>
+          <Th>District</Th>
+          <Th>% of Positive Last Surrvey</Th>
+          <Th>% of Test Available</Th>
+          <Th>Positive Employee in Last Survey</Th>
+          <Th>Positive Student in Last Survey</Th>
+          <Th>Postitve in Last Survery</Th>
+          <Th>School</Th>
+          <Th>Surveyid</Th>
+          <Th>Total Employee</Th>
+          <Th>Total Student</Th>
+          <Th>Total Tested</Th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+
+</div>
+
+
+<script>
+
+window.onload = function () {
+
+  var jqxhr = $.ajax( "https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/testing-results-detail.csv" )
+    .done(function(data) {
+
+      data = $.csv.toObjects(data);
+
+
+
+      var tbl_body = "";
+      var odd_even = false;
+      $.each(data, function() {
+          var tbl_row = "";
+          tbl_row += "<td>"+this['BOROUGH']+"</td>";
+          tbl_row += "<td>"+this['DATE_OF_TEST'].replace('T00:00:00','')+"</td>";
+          tbl_row += "<td>"+this['DBN']+"</td>";
+          tbl_row += "<td>"+this['DISTRICT']+"</td>";
+          tbl_row += "<td>"+this['PERC_OF_POSITIVE_LAST_SURRVEY']+"</td>";
+          tbl_row += "<td>"+this['PERC_OF_TEST_AVAILABLE']+"</td>";
+          tbl_row += "<td>"+this['POSITIVE_EMPLOYEE_IN_LAST_SURVEY']+"</td>";
+          tbl_row += "<td>"+this['POSITIVE_STUDENT_IN_LAST_SURVEY']+"</td>";
+          tbl_row += "<td>"+this['POSTITVE_IN_LAST_SURVERY']+"</td>";
+          tbl_row += "<td>"+this['SCHOOL']+"</td>";
+          tbl_row += "<td>"+this['SURVEYID']+"</td>";
+          tbl_row += "<td>"+this['TOTAL_EMPLOYEE']+"</td>";
+          tbl_row += "<td>"+this['TOTAL_STUDENT']+"</td>";
+          tbl_row += "<td>"+this['TOTAL_TESTED']+"</td>";
+
+          tbl_body += "<tr class=\""+( odd_even ? "odd" : "even")+"\">"+tbl_row+"</tr>";
+          odd_even = !odd_even;               
+      });
+      $("#table tbody").html(tbl_body);
+      $('#table').DataTable({"pageLength": 50});
+
+    })
+    .fail(function() {
+      alert( "error" );
+    })
+    .always(function() {
+    });
+}
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://unpkg.com/jquery-csv@1.0.6/src/jquery.csv.js"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+</body>
+</html>
