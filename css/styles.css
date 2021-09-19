@@ -36,6 +36,7 @@ div.dataTables_wrapper div.dataTables_paginate {
   position: absolute;
   opacity: 0;
   margin-left: 30px;
+  pointer-events: none;
 }
 
 .axis--yScale .tick line,
