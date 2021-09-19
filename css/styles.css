@@ -19,3 +19,16 @@ div.dataTables_wrapper div.dataTables_paginate {
   cursor: pointer;
   text-decoration: none;
 }
+
+.chart {
+  width: 100%;
+  position: relative;
+}
+.tiptext {
+  background: #fff;
+  padding: 1rem;
+  box-shadow: 1px 1px 5px #ccc;
+  position: absolute;
+  opacity: 0;
+  margin-left: 50px;
+}
