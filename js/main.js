@@ -4,6 +4,15 @@ var global = {
   height: 250
 }
 
+Date.prototype.addDays = function(days) {
+    var date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+}
+
+
+var tooltip = d3.select("body").append("div").attr("class", "tooltip");
+
 
 function makeChart(data, variable, selector) {
 
@@ -35,7 +44,7 @@ function makeChart(data, variable, selector) {
     if (global.yMax == 0) {
       height = global.height - margin.top - margin.bottom;
     } else {      
-      height = ( global.height * yMax / global.yMax ) - margin.top - margin.bottom;    
+      height = ( global.height - margin.top - margin.bottom )  * yMax / global.yMax ;    
     }
     global.yMax = yMax;
 
@@ -54,12 +63,14 @@ function makeChart(data, variable, selector) {
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleLinear().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale),
-      yAxis = d3.axisLeft(yScale);
+    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(4),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
+    
+    var yAxis = d3.axisLeft(yScale).ticks( yMax / 100 * 5);
+
 
     function colors(category) {
       var catNumbers = ["Students", "Staff"],
-        catColors = ["red", "orange"];
+        catColors = ["#c00", "#f48f0f"];
       return catColors[catNumbers.indexOf(category) % catColors.length];
     }
 
@@ -75,20 +86,18 @@ function makeChart(data, variable, selector) {
     var stack = d3.stack().keys([variable]);
     var series = stack(data);
 
-
     xScale.domain(
       d3.extent(data, function (d) {
         return d.thisDate;
       })
     );
+    xScale.domain([ xScale.domain()[0].addDays(-1), xScale.domain()[1].addDays(1) ]);
 
     var time_difference = xScale.domain()[1] - xScale.domain()[0];  
     var days_difference = time_difference / (1000 * 60 * 60 * 24);  
     var barW = width / days_difference;
 
     yScale.domain([0, yMax]);
-
-    var div = d3.select("body").append("div").attr("class", "tooltip").style("opacity", 0);
 
     var groups = mainChart.selectAll("g").data(series).enter().append("g");
 
@@ -118,18 +127,25 @@ function makeChart(data, variable, selector) {
       .on("mouseover", function (d) {
         d3.select(this).attr("stroke", "black");
         d3.select(this).attr("stroke-width", "1");
-        div.transition().duration(200).style("opacity", 0.9);
-        div
+        tooltip.transition().duration(200).style("opacity", 0.9);
+        tooltip
           .html(
             d.data.thisDate.toLocaleString("default", { year: 'numeric', month: 'short', day: 'numeric' }) +             
             "<br>" + (d[1] - d[0]) + " Cases")
-          .style("left", d3.event.pageX + "px")
+          .style("left", function() { 
+            const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+            if ( d3.event.pageX > vw - 200 ) {
+               return d3.event.pageX - 200 + "px"            
+            } else {
+               return d3.event.pageX + "px"
+            }
+          })
           .style("top", d3.event.pageY - 50 + "px")
           .attr("class", "tiptext");
       })
       .on("mouseout", function (d) {
         d3.select(this).attr("stroke-width", "0");
-        div.transition().duration(250).style("opacity", 0);
+        tooltip.transition().duration(250).style("opacity", 0);
       });
 
 
@@ -137,10 +153,26 @@ function makeChart(data, variable, selector) {
       .append("g")
       .attr("id", "main-timeline")
       .attr("class", "axis axis--xScale")
-      .attr("transform", "translate(0," + height + ")")
+      .attr("transform", "translate("+ barW / 2 +"," + height + ")")
       .call(xAxis);
 
     mainChart.append("g").attr("class", "axis axis--yScale").call(yAxis);
+
+
+  function make_y_gridlines() {		
+      return d3.axisLeft(yScale)
+          .ticks( yMax / 100 * 5 )
+  }
+  
+  // add the X gridlines
+  mainChart.append("g")			
+      .attr("class", "grid")
+      .call(
+        make_y_gridlines()
+          .tickSize(-width)
+          .tickFormat("")
+      )
+
 
 }
 

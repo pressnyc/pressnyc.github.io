@@ -30,5 +30,15 @@ div.dataTables_wrapper div.dataTables_paginate {
   box-shadow: 1px 1px 5px #ccc;
   position: absolute;
   opacity: 0;
-  margin-left: 50px;
+  margin-left: 30px;
+}
+
+.axis--yScale .tick line,
+.grid .tick line { 
+  stroke: #ccc;
+  mix-blend-mode: multiply;
+}
+
+path.domain {
+  display: none;
 }
