@@ -183,12 +183,12 @@ function makeChart(data, variable, selector) {
       .attr("x", function (d) {
         return xScale(new Date(theDate));
       })
-      .attr("y", 10)
+      .attr("y", 0)
       .attr("width", 1)
       .attr("height", function (d) {
-        return yScale(10) - yScale(global.yMax);
+        return yScale(0) - yScale(global.yMax);
       })
-      .style("opacity", 0.5);
+      .style("opacity", 0.3);
   }
 
   if (variable == 'Students') {
