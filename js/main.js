@@ -101,6 +101,7 @@ function makeChart(data, variable, selector) {
 
     var groups = mainChart.selectAll("g").data(series).enter().append("g");
 
+
     groups
       .selectAll("rect")
       .data(function (d) {
@@ -149,6 +150,7 @@ function makeChart(data, variable, selector) {
       });
 
 
+
     mainChart
       .append("g")
       .attr("id", "main-timeline")
@@ -172,6 +174,30 @@ function makeChart(data, variable, selector) {
           .tickSize(-width)
           .tickFormat("")
       )
+
+
+  function addLine(theDate) {
+    mainChart
+      .append("rect")
+      .attr("class", "grid")
+      .attr("x", function (d) {
+        return xScale(new Date(theDate));
+      })
+      .attr("y", 10)
+      .attr("width", 1)
+      .attr("height", function (d) {
+        return yScale(10) - yScale(global.yMax);
+      })
+      .style("opacity", 0.5);
+  }
+
+  if (variable == 'Students') {
+    addLine('2021-09-13T00:00:00');
+  }
+  if (variable == 'Staff') {
+    addLine('2021-09-09T00:00:00');
+  }
+
 
 
 }
