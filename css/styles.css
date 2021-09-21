@@ -25,6 +25,17 @@ div.dataTables_wrapper div.dataTables_paginate {
   cursor: pointer;
   text-decoration: none;
 }
+.paginate_button.current {
+  border-color: #c90;
+  background-color: #c90;
+  color: #fff;
+}
+.paginate_button.disabled {
+  cursor: auto;
+  color: #ddd;
+  border-color: #ddd;
+}
+
 
 .chart {
   width: 100%;
