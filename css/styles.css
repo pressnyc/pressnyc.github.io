@@ -10,6 +10,19 @@ h1,h2,h3,h4,h5,h6,h7 {
 h1 { font-size: 2rem; }
 h2 { font-size: 1.25rem; }
 
+
+input[type="search"] {
+  background-color: #f2f2ea;
+  margin-bottom: 1rem;
+}
+
+div.dataTables_wrapper div.dataTables_length {
+  display: inline;
+}
+#table_filter {
+  float: right;
+}
+
 div.dataTables_wrapper div.dataTables_paginate {
   text-align: center; 
   margin: 2rem 0; 
