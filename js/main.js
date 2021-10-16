@@ -352,7 +352,7 @@ d3.csv("https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/m
 
 function makeIncidence(data, selector) {
 
-    var height = global.height * .5;
+    var height = global.height;
     var yMax = 110;
     
     var svg = d3

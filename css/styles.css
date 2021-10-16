@@ -78,7 +78,7 @@ path.domain {
 
 
 section {
-  margin: 4.5rem 0;
+  margin: 5rem 0;
 }
 section h2 {
   position: relative;
@@ -136,3 +136,6 @@ section h2:before {
 .line.age_18_24 {     stroke:  #ffa600; }
 .dot.age_18_24 {      fill:    #ffa600; }
 
+.nobreak {
+  white-space: nowrap;
+}
