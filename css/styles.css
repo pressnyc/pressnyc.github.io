@@ -73,3 +73,66 @@ div.dataTables_wrapper div.dataTables_paginate {
 path.domain {
   display: none;
 }
+
+
+
+
+section {
+  margin: 4.5rem 0;
+}
+section h2 {
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+section h2:before {
+  content: '';
+  height: 2px;
+  width: 75px;
+  background: #333;
+  position: absolute;
+  left: 0px;
+  top: -15px;
+}
+
+.source {
+  color: #888;
+  margin-top: .75rem;
+  margin-bottom: 1.5rem;
+  font-size: .9rem;
+}
+.source a {
+  color: #444;
+}
+
+
+
+
+.key {
+  text-align: center;
+  font-size: .9rem;
+  margin-top: .75rem;
+}
+.key svg {
+  margin-left: 2rem;
+}
+.line {
+    fill: none;
+    stroke-width: 1.5;
+}
+
+.line.age_all_ages {  stroke:  #999; }
+.dot.age_all_ages {   fill:    #999; }
+
+.line.age_0_4 {       stroke:  #55c; }
+.dot.age_0_4 {        fill:    #55c; }
+
+.line.age_5_12 {      stroke:  #bc5090; }
+.dot.age_5_12 {       fill:    #bc5090; }
+
+.line.age_13_17 {     stroke:  #ff6361; }
+.dot.age_13_17 {      fill:    #ff6361; }
+
+
+.line.age_18_24 {     stroke:  #ffa600; }
+.dot.age_18_24 {      fill:    #ffa600; }
+

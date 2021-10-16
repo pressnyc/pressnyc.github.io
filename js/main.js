@@ -4,7 +4,7 @@ var global = {
   height: 250
 }
 
-var margin = { top: 0, right: 50, bottom: 50, left: 20 },
+var margin = { top: 0, right: 50, bottom: 25, left: 20 },
   width = 800 - margin.left - margin.right;
 
 
@@ -344,3 +344,135 @@ function makeAttendance(data, variable, selector) {
 d3.csv("https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/daily-attendance-mean.csv", function (data) {
   makeAttendance(data,'Attendance','#attendance');
 });
+
+
+
+
+
+
+function makeIncidence(data, selector) {
+
+    var height = global.height * .5;
+    var yMax = 110;
+    
+    var svg = d3
+      .select(selector)
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .call(responsivefy)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var parseDate = d3.timeParse("%m/%d/%Y");
+
+    var xScale = d3.scaleTime().range([0, width]),
+      yScale = d3.scaleLinear().range([height, 0]);
+
+    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(4),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
+    
+    var yAxis = d3.axisLeft(yScale).ticks( yMax / 100 * 5);
+
+    var mainChart = svg
+      .append("g")
+      .attr("class", "focus")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    d3.map(data, function (d) {
+      d.thisDate = parseDate(d.week_ending);
+    });
+
+
+    xScale.domain(
+      d3.extent(data, function (d) {
+        return d.thisDate;
+      })
+    );
+    xScale.domain([ new Date('09/01/2021'), xScale.domain()[1] ]);
+
+    var yScale = d3.scaleLinear()
+        .domain([0, 260]) // input 
+        .range([height, 0]); // output 
+
+
+
+   ['age_all_ages','age_0_4','age_5_12','age_13_17','age_18_24'].forEach( function(age) {
+  
+    var line = d3.line()
+        .x(function(d, i) { return xScale( d.thisDate ); })
+        .y(function(d) { return yScale(d[age]); })
+        .curve(d3.curveMonotoneX)
+
+    svg.append("path")
+        .datum(data)
+        .attr("class", "line " + age)
+        .attr("d", line);
+
+    svg.selectAll("dot")
+        .data(data)
+      .enter().append("circle")
+        .attr("stroke", "#ffffff")
+        .attr("class", "dot " + age)
+        .attr("cx", function(d, i) { return xScale( d.thisDate ) })
+        .attr("cy", function(d) { return yScale(d[age]) })
+        .attr("r", 3)
+        .on("mouseover", function (d) {
+          d3.select(this).attr("stroke", "#000000");
+          tooltip.transition().duration(200).style("opacity", 0.9);
+          tooltip
+            .html(
+              '<strong>' + age.replace('age_','Ages ').replace('_','–').replace('Ages all–ages','Community Incidence') + 
+              "</strong><br>Week ending " + d.thisDate.toLocaleString("default", { year: 'numeric', month: 'short', day: 'numeric' }) +             
+              "<br>" + d[age] + " per 100K"
+              )
+            .style("left", function() { 
+              const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+              if ( d3.event.pageX > vw - 200 ) {
+                 return d3.event.pageX - 200 + "px"            
+              } else {
+                 return d3.event.pageX + "px"
+              }
+            })
+            .style("top", d3.event.pageY - 50 + "px")
+            .attr("class", "tiptext");
+        })
+        .on("mouseout", function (d) {
+          d3.select(this).attr("stroke", "#ffffff");
+          tooltip.transition().duration(250).style("opacity", 0);
+        });
+
+  });
+
+
+
+    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(7),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
+
+    svg
+      .append("g")
+      .attr("id", "main-timeline")
+      .attr("class", "axis axis--xScale")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  function make_y_gridlines() {		
+      return d3.axisLeft(yScale)
+          .ticks( yMax / 100 * 5 )
+          .tickSize(-width)
+          .tickFormat(d => d)
+  }
+  
+  // add the X gridlines
+  mainChart.append("g")			
+      .attr("class", "grid")
+      .call( make_y_gridlines() )
+
+}
+
+d3.csv("https://raw.githubusercontent.com/nychealth/coronavirus-data/master/trends/weekly-case-rate-age.csv", function (data) {
+  makeIncidence(data,'#incidence');
+});
+
+
+
+
+

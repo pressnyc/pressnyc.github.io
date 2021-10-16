@@ -1,117 +1,147 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Data on COVID-19 New York City public schools scraped from the Department of Education">
-    <meta name="author" content="John Emerson">
-
-    <title>New York City COVID-19 in Schools in 2021</title>
-
-    <link rel="canonical" href="https://pressnyc.github.io">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com"> 
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/styles.css?1">
-
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Data on COVID-19 New York City public schools scraped from the Department of Education">
+  <meta name="author" content="John Emerson">
+  <title>New York City COVID-19 in Schools in 2021</title>
+  <link rel="canonical" href="https://pressnyc.github.io">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;1,400;1,600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/styles.css?1">
 </head>
 <body>
   <div class="container">
-  
-  <div class="d-flex mb-5 align-items-center"><img src="img/press-nyc-logo.png" width="100" height="100" class="mt-4 me-4">
-    <h1 class="mt-4">COVID-19 and New York City Schools</h1>
-  </div>
-  
-  <main>
-
-    <h2 class="mt-3">New Positive Cases in DOE & Charter Schools (weekly)</h2>
-    <div id="new-cases-by-week-chart"><img alt="Line chart showing new covid cases by week, broken down by students and staff" class="img-fluid" src="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/charts/output/cases-by-week.png"></div>
-    <p class="mb-4 small text-secondary">Since reporting dates are inexact, grouping by week may more accurately suggest trends in new cases. Source: NYC Department of Education <a href="https://www.schools.nyc.gov/school-life/health-and-wellness/covid-information/daily-covid-case-map" class="text-secondary">Daily COVID Case Map Summary</a> scraped and archived on <a href="https://github.com/pressnyc/nyc-doe-covid-interventions" class="text-secondary">GitHub</a>.</p>
-
-    <h2>New Positive Cases in DOE & Charter School Students (daily)</h2>
-    <div id="students" class="chart"></div>
-
-    <h2 class="mt-3">New Positive Cases in DOE & Charter School Staff (daily)</h2>
-    <div id="staff" class="chart"></div>
-    
-    <p class="mb-4 small text-secondary">September 13, 2021 marks the first day of school for traditional DOE students. September 9, 2021 was the first day for traditional DOE school staff. Source: NYC Department of Education <a href="https://www.schools.nyc.gov/school-life/health-and-wellness/covid-information/daily-covid-case-map" class="text-secondary">Daily COVID Case Map Summary</a> scraped and archived on <a href="https://github.com/pressnyc/nyc-doe-covid-interventions" class="text-secondary">GitHub</a>.</p>
 
 
-
-    <h2 class="mt-5">Average Daily Student Attendance Across DOE Schools</h2>
-    <div id="attendance" class="chart"></div>
-
-
-    <h2 class="mt-3">Searchable Tables</h2>
-    <ul>
-      <li><a href="tables/testing.html">School testing</a></li>
-      <li><a href="tables/interventions.html">Classroom closures and other school interventions</a></li>
-      <li><a href="https://pressnyc.workingdirectory.net/d/doe-covid-data/activeInterventions">Classroom closures and other school interventions</a> (with experimental advanced query tools)</li>
-    </ul>
-
-    <h2 class="mt-5">Downloadable Data</h2>
-
-    <p class="mb-4 small text-secondary">Mac users: click on a link below and type Command-S to save the CSV file. Windows users: right-click the links and choose "Save As…"</p>
-
-
-    <ul>
-      <li><a href="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/confirmed-cases-daily.csv" download="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/confirmed-cases-daily.csv">Daily totals of confirmed cases in students and staff</a></li>
-      <li><a href="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/confirmed-cases-cumulative.csv" download="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/confirmed-cases-cumulative.csv">Cumulative totals of confirmed cases in students and staff</a></li>
-      <li><a href="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/actions.csv" download="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/actions.csv">Daily and cumulative actions in response COVID cases in DOE and DECE schools</a></li>
-      <li><a href="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/actions-charter.csv" download="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/actions-charter.csv">Daily and cumulative actions in response COVID cases in NYC charter schools</a></li>
-      <li><a href="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/activeinterventioncases.csv" download="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/activeinterventioncases.csv">Classroom closures and other interventions</a></li>
-      <li><a href="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/testing-results-detail.csv" download="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/testing-results-detail.csv">Testing results</a></li>
-      <li><a href="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/daily-attendance.csv" download="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/daily-attendance.csv">Daily Attendance</a></li>
-    </ul>
-
-
-    <p><br></p>
-    <hr>
-
-    <h5>How to Use This Web Site</h5>
-    
-    <div class="row mt-3 mb-5">
-      <div class="col-md-4">
-        <div class="card h-100 p-3">
-          How to use The People’s Dashboard pressnyc.github.io<br><a href="https://www.loom.com/share/d9aea74c8add443fa1584206b7b7b32f">Watch Video »</a>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card h-100 p-3">
-          NYC Schools Covide case map frustrating you? How about a searchable table instead?<br><a href="https://www.loom.com/share/fc832537c0d645eea1f756e59d67d97b">Watch Video »</a>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card h-100 p-3">
-          How many Covid cases have their been/are there in my school?<br><a href="https://www.loom.com/share/8b15d3ad65554487a5cb24486cc80102">Watch Video »</a>
-        </div>
-      </div>
+    <div class="d-flex mb-5 align-items-center">
+      <img src="img/press-nyc-logo.png" width="100" height="100" class="mt-4 me-4">
+      <h1 class="mt-4">COVID-19 and New York City Schools</h1>
     </div>
 
 
+    <main>
 
-    <hr>
-
-    <p><strong>Why is this dashboard needed?</strong> A People's Dashboard would not be necessary if the de Blasio administration, Department of Health, and Department of Education were more transparent in their reporting of Covid cases in our schools. We hope these resources will allow parents, the press, elected officials, students and staff a better understanding of what is happening in their own schools, in the system as a whole, and over time. The more we know, the better we can advocate for safety for all students, especially Black, Latinx, immigrant students, students with disabilities and students in temporary housing.</p> 
-
-    <p><strong>Who created the People's Dashboard?</strong> This is a project of <a href="https://www.pressnyc.org">PRESS NYC</a>. It was designed and developed by <a href="https://backspace.com/">John Emerson</a> and <a href="https://current.workingdirectory.net">Jamie McClelland</a> in collaboration with Professor Jen Jennings and members of PRESS NYC’s steering committee.</p>
-
-    <p><strong>What's PRESS NYC?</strong> Parents for Responsive Equitable Safe Schools (<a href="https://www.pressnyc.org">PRESS NYC</a>) is a parent collective spanning generations, cultures, fields of expertise, & zip codes, building community across school districts to hold the DOE, the Mayor, & the education press accountable. Follow us @safeschoolsny on all socials.</p>
-
-    <p><strong>Want to get in touch?</strong> parents dot press dot nyc at gmail</p>
-
-    <p><br></p>
+      <section>
+        <h2>New Positive Cases in DOE & Charter Schools (weekly)</h2>
+        <div id="new-cases-by-week-chart"><img alt="Line chart showing new covid cases by week, broken down by students and staff" class="img-fluid" src="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/charts/output/cases-by-week.png"></div>
+        <p class="source">Since reporting dates are inexact, grouping by week may more accurately suggest trends in new cases. Source: NYC Department of Education <a href="https://www.schools.nyc.gov/school-life/health-and-wellness/covid-information/daily-covid-case-map">Daily COVID Case Map Summary</a> scraped and archived on <a href="https://github.com/pressnyc/nyc-doe-covid-interventions">GitHub</a>.</p>
+      </section>
 
 
-  </main>
+
+      <section>
+        <h2>New Positive Cases in DOE & Charter School Students (daily)</h2>
+        <div id="students" class="chart"></div>
+      </section>
+
+
+
+      <section>
+        <h2>New Positive Cases in DOE & Charter School Staff (daily)</h2>
+        <div id="staff" class="chart"></div>
+        <p class="source">September 13, 2021 marks the first day of school for traditional DOE students. September 9, 2021 was the first day for traditional DOE school staff. Source: NYC Department of Education <a href="https://www.schools.nyc.gov/school-life/health-and-wellness/covid-information/daily-covid-case-map">Daily COVID Case Map Summary</a> scraped and archived on <a href="https://github.com/pressnyc/nyc-doe-covid-interventions">GitHub</a>.</p>
+      </section>
+
+
+
+      <section>
+        <h2>7-day Incidence Rates Per 100K</h2>
+        <div id="incidence" class="chart"></div>
+
+        <div class="key">
+        <svg height="20" width="20"><circle cx="10" cy="10" r="5" class="dot age_all_ages" /></svg>Community
+        <svg height="20" width="20"><circle cx="10" cy="10" r="5" class="dot age_0_4" /></svg>Ages 0–4
+        <svg height="20" width="20"><circle cx="10" cy="10" r="5" class="dot age_5_12" /></svg>Ages 5–12
+        <svg height="20" width="20"><circle cx="10" cy="10" r="5" class="dot age_13_17" /></svg>Ages 13–17
+        <svg height="20" width="20"><circle cx="10" cy="10" r="5" class="dot age_18_24" /></svg>Ages 18–24
+        </div>
+
+        <p class="source">Source: <a href="https://github.com/nychealth/coronavirus-data">NYC Coronavirus Disease 2019 (COVID-19) Data</a> <a href="https://github.com/nychealth/coronavirus-data/blob/master/trends/weekly-case-rate-age.csv">weekly case rate by age group</a>.</p>
+      </section>
+
+
+
+      <section>
+        <h2>Average Daily Student Attendance Across DOE Schools</h2>
+        <div id="attendance" class="chart"></div>
+        <p class="source">Source: NYC Department of Education <a href="https://www.nycenet.edu/PublicApps/Attendance.aspx">Daily Attendance Report</a> scraped and archived on <a href="https://github.com/pressnyc/nyc-doe-covid-interventions">GitHub</a>.</p>
+      </section>
+
+
+
+      <section>
+        <h2>Searchable Tables</h2>
+        <ul>
+          <li><a href="tables/testing.html">School testing</a></li>
+          <li><a href="tables/interventions.html">Classroom closures and other school interventions</a></li>
+          <li><a href="https://pressnyc.workingdirectory.net/d/doe-covid-data/activeInterventions">Classroom closures and other school interventions</a> (with experimental advanced query tools)</li>
+        </ul>
+      </section>
+
+
+
+      <section>
+        <h2>Downloadable Data</h2>
+        <p class="source">Mac users: click on a link below and type Command-S to save the CSV file. Windows users: right-click the links and choose "Save As…"</p>
+        <ul>
+          <li><a href="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/confirmed-cases-daily.csv" download="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/confirmed-cases-daily.csv">Daily totals of confirmed cases in students and staff</a></li>
+          <li><a href="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/confirmed-cases-cumulative.csv" download="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/confirmed-cases-cumulative.csv">Cumulative totals of confirmed cases in students and staff</a></li>
+          <li><a href="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/actions.csv" download="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/actions.csv">Daily and cumulative actions in response COVID cases in DOE and DECE schools</a></li>
+          <li><a href="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/actions-charter.csv" download="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/actions-charter.csv">Daily and cumulative actions in response COVID cases in NYC charter schools</a></li>
+          <li><a href="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/activeinterventioncases.csv" download="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/activeinterventioncases.csv">Classroom closures and other interventions</a></li>
+          <li><a href="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/testing-results-detail.csv" download="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/testing-results-detail.csv">Testing results</a></li>
+          <li><a href="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/daily-attendance.csv" download="https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/daily-attendance.csv">Daily Attendance</a></li>
+        </ul>
+      </section>
+
+
+
+      <section>
+        <h2>How to Use This Web Site</h2>
+        <div class="row mt-3">
+          <div class="col-md-4">
+            <div class="card h-100 p-3">
+              How to use The People’s Dashboard pressnyc.github.io<br>
+              <a href="https://www.loom.com/share/d9aea74c8add443fa1584206b7b7b32f">Watch Video »</a>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card h-100 p-3">
+              NYC Schools Covide case map frustrating you? How about a searchable table instead?<br>
+              <a href="https://www.loom.com/share/fc832537c0d645eea1f756e59d67d97b">Watch Video »</a>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card h-100 p-3">
+              How many Covid cases have their been/are there in my school?<br>
+              <a href="https://www.loom.com/share/8b15d3ad65554487a5cb24486cc80102">Watch Video »</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      <section>
+        <h2>About This Site</h2>
+        <p><strong>Why is this dashboard needed?</strong> A People's Dashboard would not be necessary if the de Blasio administration, Department of Health, and Department of Education were more transparent in their reporting of Covid cases in our schools. We hope these resources will allow parents, the press, elected officials, students and staff a better understanding of what is happening in their own schools, in the system as a whole, and over time. The more we know, the better we can advocate for safety for all students, especially Black, Latinx, immigrant students, students with disabilities and students in temporary housing.</p>
+        <p><strong>Who created the People's Dashboard?</strong> This is a project of <a href="https://www.pressnyc.org">PRESS NYC</a>. It was designed and developed by <a href="https://backspace.com/">John Emerson</a> and <a href="https://current.workingdirectory.net">Jamie McClelland</a> in collaboration with Professor Jen Jennings and members of PRESS NYC’s steering committee.</p>
+        <p><strong>What's PRESS NYC?</strong> Parents for Responsive Equitable Safe Schools (<a href="https://www.pressnyc.org">PRESS NYC</a>) is a parent collective spanning generations, cultures, fields of expertise, & zip codes, building community across school districts to hold the DOE, the Mayor, & the education press accountable. Follow us @safeschoolsny on all socials.</p>
+        <p><strong>Want to get in touch?</strong> parents dot press dot nyc at gmail</p>
+      </section>
+
+
+
+    </main>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-  <script src="https://d3js.org/d3.v4.js"></script>
-  <script src="js/main.js?2"></script>
-      
-  </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script> 
+<script src="https://d3js.org/d3.v4.js"></script> 
+<script src="js/main.js?2"></script>
+</body>
 </html>
