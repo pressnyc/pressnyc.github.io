@@ -466,6 +466,23 @@ function makeIncidence(data, selector) {
       .attr("class", "grid")
       .call( make_y_gridlines() )
 
+
+  function addLine(theDate) {
+    mainChart
+      .append("rect")
+      .attr("class", "grid")
+      .attr("x", function (d) {
+        return xScale(new Date(theDate));
+      })
+      .attr("y", 0)
+      .attr("width", 1)
+      .attr("height", function (d) {
+        return height;
+      })
+      .style("opacity", 0.3);
+  }
+  addLine('2021-09-13T00:00:00');
+
 }
 
 d3.csv("https://raw.githubusercontent.com/nychealth/coronavirus-data/master/trends/weekly-case-rate-age.csv", function (data) {
