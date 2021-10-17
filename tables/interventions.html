@@ -61,10 +61,19 @@ window.onload = function () {
     return ((x-min)*(x-max) <= 0);
   }
 
-  var jqxhr = $.ajax( "https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/activeinterventioncases.json" )
-    .done(function(data) {
+  var jqxhr1 = $.get( "https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/activeinterventioncases.json" )
 
-      data = JSON.parse(data);
+  var jqxhr2 = $.get( "https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/schoolinterventions.csv" )
+
+  $.when(jqxhr1,jqxhr2).done(function(activeinterventioncases,schoolinterventions){
+
+      var schoolinterventions = Papa.parse(schoolinterventions[0], {header: true,});
+
+      var activeinterventioncases = JSON.parse(activeinterventioncases[0]);
+
+      var data = activeinterventioncases.concat(schoolinterventions.data);
+
+      console.log(data);
 
       var tbl_body = "";
       var odd_even = false;
@@ -76,7 +85,12 @@ window.onload = function () {
           var district = this['nycsr_building.nycsr_geographicaldistrictcode'];
           var prek = '';
 
-          tbl_row += "<td>"+this['nycsr_admininterventiontype@OData.Community.Display.V1.FormattedValue']+"</td>";
+          if (typeof this['nycsr_type@OData.Community.Display.V1.FormattedValue'] != "undefined") {
+            tbl_row += "<td>"+this['nycsr_type@OData.Community.Display.V1.FormattedValue']+"</td>";
+          } else {
+            tbl_row += "<td>"+this['nycsr_admininterventiontype@OData.Community.Display.V1.FormattedValue']+"</td>";
+          }
+    
           tbl_row += "<td>"+this['nycsr_building.nycsr_address']+"</td>";
           tbl_row += "<td>"+this['nycsr_building.nycsr_buildingname']+"</td>";
 
@@ -107,9 +121,14 @@ window.onload = function () {
            tbl_row += "<td>"+this['nycsr_building.nycsr_borough@OData.Community.Display.V1.FormattedValue']+"</td>";
           }
 
-
           tbl_row += "<td>"+district+"</td>";
-          tbl_row += "<td>"+this['nycsr_interventionstartdate@OData.Community.Display.V1.FormattedValue']+"</td>";
+          
+          if (typeof this['nycsr_startdate@OData.Community.Display.V1.FormattedValue'] != "undefined") {          
+            tbl_row += "<td>"+this['nycsr_startdate@OData.Community.Display.V1.FormattedValue']+"</td>";
+          } else {
+            tbl_row += "<td>"+this['nycsr_interventionstartdate@OData.Community.Display.V1.FormattedValue']+"</td>";
+          }
+
           tbl_row += "<td>"+this['nycsr_locationsite.nycsr_sitename']+prek+"</td>";
 
           tbl_body += "<tr class=\""+( odd_even ? "odd" : "even")+"\">"+tbl_row+"</tr>";
@@ -118,16 +137,12 @@ window.onload = function () {
       $("#table tbody").html(tbl_body);
       $('#table').DataTable({"pageLength": 50});
 
-    })
-    .fail(function() {
-      alert( "error" );
-    })
-    .always(function() {
     });
 }
 </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.1/papaparse.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
 
 </body>
