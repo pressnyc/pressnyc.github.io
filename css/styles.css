@@ -66,7 +66,7 @@ div.dataTables_wrapper div.dataTables_paginate {
 
 .axis--yScale .tick line,
 .grid .tick line { 
-  stroke: #ccc;
+  stroke: #ddd;
   mix-blend-mode: multiply;
 }
 
@@ -119,6 +119,16 @@ section h2:before {
     fill: none;
     stroke-width: 1.5;
 }
+
+.line.Total {  stroke:  #36c; }
+.dot.Total {   fill:    #36c; }
+
+.line.Students {  stroke:  #c00; }
+.dot.Students {   fill:    #c00; }
+
+.line.Staff {  stroke:  #f48f0f; }
+.dot.Staff {   fill:    #f48f0f; }
+
 
 .line.age_all_ages {  stroke:  #696; stroke-width: 3.5; }
 .dot.age_all_ages {   fill:    #696; }

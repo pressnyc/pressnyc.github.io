@@ -16,6 +16,11 @@ Date.prototype.addDays = function(days) {
 }
 
 
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+
 function responsivefy(svg) {
   var container = d3.select(svg.node().parentNode),
     width = parseInt(svg.style("width")),
@@ -35,6 +40,146 @@ function responsivefy(svg) {
 
 
 var tooltip = d3.select("body").append("div").attr("class", "tooltip");
+
+
+
+
+
+
+function makeWeeklyCases(data, selector) {
+
+    var height = global.height;
+    
+    var svg = d3
+      .select(selector)
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .call(responsivefy)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var parseDate = d3.timeParse("%Y-%m-%d");
+
+    var xScale = d3.scaleTime().range([0, width]),
+      yScale = d3.scaleLinear().range([height, 0]);
+
+    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(4),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
+    
+
+    var mainChart = svg
+      .append("g")
+      .attr("class", "focus")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    d3.map(data, function (d) {
+      d.thisDate = parseDate(d['Week End']);
+      d.Total = Number(d.Total);
+      d.Students = Number(d.Students);
+      d.Staff = Number(d.Staff);
+    });
+
+
+    xScale.domain([
+      new Date('09/18/2021'),
+      d3.max(data, function (d) {
+        return d.thisDate;
+      })
+    ]);
+
+    var yScale = d3.scaleLinear()
+        .range([height, 0]); // output 
+
+    yScale.domain([0,
+      d3.max(data, function (d) {
+        return d.Total + 10;
+      })]
+    );
+    yMax = yScale.domain()[1];
+
+   ['Total','Students','Staff'].forEach( function(age) {
+  
+    var line = d3.line()
+        .x(function(d, i) { return xScale( d.thisDate ); })
+        .y(function(d) { return yScale( d[age] ); })
+        .curve(d3.curveMonotoneX)
+
+    svg.append("path")
+        .datum(data)
+        .attr("class", "line " + age)
+        .attr("d", line);
+
+    svg.selectAll("dot")
+        .data(data)
+      .enter().append("circle")
+        .attr("stroke", "#ffffff")
+        .attr("class", "dot " + age)
+        .attr("cx", function(d, i) { return xScale( d.thisDate ) })
+        .attr("cy", function(d) { return yScale( d[age] ) })
+        .attr("r", 3)
+        .on("mouseover", function (d) {
+          d3.select(this).attr("stroke", "#000000");
+          tooltip.transition().duration(200).style("opacity", 0.9);
+          tooltip
+            .html(
+              '<strong>' + age + 
+              "</strong><br>Week ending " + d.thisDate.toLocaleString("default", { year: 'numeric', month: 'short', day: 'numeric' }) +             
+              "<br>" + numberWithCommas( d[age] ) + " new cases"
+              )
+            .style("left", function() { 
+              const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+              if ( d3.event.pageX > vw - 200 ) {
+                 return d3.event.pageX - 200 + "px"            
+              } else {
+                 return d3.event.pageX + "px"
+              }
+            })
+            .style("top", d3.event.pageY - 50 + "px")
+            .attr("class", "tiptext");
+        })
+        .on("mouseout", function (d) {
+          d3.select(this).attr("stroke", "#ffffff");
+          tooltip.transition().duration(250).style("opacity", 0);
+        });
+
+  });
+
+
+
+    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(7),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
+
+    svg
+      .append("g")
+      .attr("id", "main-timeline")
+      .attr("class", "axis axis--xScale")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  function make_y_gridlines() {		
+      return d3.axisLeft(yScale)
+          .ticks( yMax / 100 )
+          .tickSize(-width)
+  }
+  
+  // add the X gridlines
+  mainChart.append("g")			
+      .attr("class", "grid")
+      .call( make_y_gridlines() )
+
+}
+
+d3.csv("https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/confirmed-cases-by-week.csv", function (data) {
+  makeWeeklyCases(data,'#new-cases-by-week-chart');
+});
+
+
+
+
+
+
+
+
+
 
 
 function makeChart(data, variable, selector) {
