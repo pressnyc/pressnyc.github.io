@@ -421,7 +421,7 @@ function makeIncidence(data, selector) {
           tooltip.transition().duration(200).style("opacity", 0.9);
           tooltip
             .html(
-              '<strong>' + age.replace('age_','Ages ').replace('_','–').replace('Ages all–ages','Community Incidence') + 
+              '<strong>' + age.replace('age_','Ages ').replace('_','–').replace('Ages all–ages','All of NYC') + 
               "</strong><br>Week ending " + d.thisDate.toLocaleString("default", { year: 'numeric', month: 'short', day: 'numeric' }) +             
               "<br>" + d[age] + " per 100K"
               )

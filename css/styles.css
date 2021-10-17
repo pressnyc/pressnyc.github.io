@@ -120,8 +120,8 @@ section h2:before {
     stroke-width: 1.5;
 }
 
-.line.age_all_ages {  stroke:  #999; }
-.dot.age_all_ages {   fill:    #999; }
+.line.age_all_ages {  stroke:  #696; stroke-width: 3.5; }
+.dot.age_all_ages {   fill:    #696; }
 
 .line.age_0_4 {       stroke:  #55c; }
 .dot.age_0_4 {        fill:    #55c; }
