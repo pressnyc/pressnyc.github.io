@@ -638,3 +638,265 @@ d3.csv("https://raw.githubusercontent.com/nychealth/coronavirus-data/master/tren
 
 
 
+
+
+
+function schoolTestingCases(casedata, testingdata, selector) {
+
+    var height = 175;
+    
+
+    var parseCaseDate = d3.timeParse("Confirmed Cumulative Positive COVID Cases: September 13, 2021 - %B %d, %Y at 6 PM");
+
+    d3.map(casedata, function (d) {
+      var thisDate = parseCaseDate(d.Title);
+      if (thisDate) {
+        d.thisDate = thisDate;
+        d.StudentsNum = Number( d.Students.replace(',','') );
+      }
+    });
+          
+    
+    var parseTestDate = d3.timeParse("9/13/2021 through %m/%d/%Y");
+
+    d3.map(testingdata, function (d) {
+      var thisDate = parseTestDate(d['Positive cases identified by school testing']);
+      if (thisDate) {
+        d.thisDate = thisDate;
+        d.StudentsNum = Number( d.Students.replace(',','') );
+      }
+    });
+
+
+
+    var last_date = parseCaseDate( casedata[0]['Title']);
+    d3.select('#cumulative-date').html( last_date.toLocaleString("default", { year: 'numeric', month: 'long', day: 'numeric' }) );
+    var testing_percent = testingdata[0]['StudentsNum'] / casedata[0]['StudentsNum'] * 100;
+    testing_percent = testing_percent.toPrecision(2) + '%';
+    d3.select('#testing-percent').html(testing_percent);
+      
+
+    var yMax = d3.max(casedata, function (d) { return d.StudentsNum; });;
+        
+    var svg = d3
+      .select(selector)
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .call(responsivefy)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var xScale = d3.scaleTime().range([0, width]),
+      yScale = d3.scaleLinear().range([height, 0]);
+
+    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(4),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
+    
+    var yAxis = d3.axisLeft(yScale).ticks( 10 );
+    
+    
+    var mainChart = svg
+      .append("g")
+      .attr("class", "focus")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    xScale.domain(
+      d3.extent(casedata, function (d) {
+        return d.thisDate;
+      })
+    );
+
+
+
+    var previous_testing_datum = null;
+    var previous_case_datum = null;
+
+    var loopDate = new Date( xScale.domain()[0] );
+    while(loopDate < xScale.domain()[1]){
+
+       var case_data_exists = 0;
+       casedata.forEach( function (d,i){
+         if ( (d.thisDate) && (d.thisDate.valueOf() == loopDate.valueOf() ) ) {
+            previous_case_datum = d;
+            case_data_exists = 1;
+            return true;
+         }
+       });
+
+      if ((case_data_exists == 0) && (previous_case_datum !== null)) {
+        var thisDatum = { ...previous_case_datum };
+        thisDatum.thisDate = new Date( loopDate );
+        casedata.push(thisDatum);
+      }
+
+
+       var testing_data_exists = 0;
+       testingdata.forEach( function (d,i){
+         if (d.thisDate.valueOf() == loopDate.valueOf() ) {
+            previous_testing_datum = d;
+            testing_data_exists = 1;
+            return true;
+         }
+       });
+
+      if ((testing_data_exists == 0) && (previous_testing_datum !== null)) {
+        var thisDatum = { ...previous_testing_datum };
+        thisDatum.thisDate = new Date( loopDate );
+        testingdata.push(thisDatum);
+      }
+
+
+      var newDate = loopDate.setDate(loopDate.getDate() + 1);
+      loopDate = new Date(newDate);
+    }
+    
+
+    var time_difference = xScale.domain()[1] - xScale.domain()[0];  
+    var days_difference = time_difference / (1000 * 60 * 60 * 24);  
+    var barW = width / days_difference;
+
+    yScale.domain([0, yMax]);
+
+
+    var stack = d3.stack().keys(['StudentsNum']);
+    var series = stack(casedata);
+  
+    var testing_stack = d3.stack().keys(['StudentsNum']);
+    var testing_series = testing_stack(testingdata);
+
+
+    var groups = mainChart.selectAll("g").data(series).enter().append("g").attr('id','all_cases_id');
+
+    groups
+      .selectAll("rect")
+      .data(function (d) {
+        return d;
+      })
+      .enter()
+      .append("rect")
+      .attr("id", "bar")
+      .attr("class", "cases_all")
+      .attr("x", function (d,i) {
+        if (d.data.thisDate) {
+          return xScale(d.data.thisDate);
+        }
+      })
+      .attr("y", function (d) {
+        if (yScale(d[1])) {
+          return yScale(d[1]);
+        }
+      })
+      .attr("width", barW)
+      .attr("height", function (d) {
+        if (yScale(d[1])) {
+          return yScale(d[0]) - yScale(d[1]);
+        }
+      })
+      .on("mouseover", function (d) {
+        d3.select(this).attr("stroke", "black");
+        d3.select(this).attr("stroke-width", "1");
+        tooltip.transition().duration(200).style("opacity", 0.9);
+        tooltip
+          .html(
+            d.data.thisDate.toLocaleString("default", { year: 'numeric', month: 'short', day: 'numeric' }) +             
+            "<br>" + numberWithCommas(d[1] - d[0]) + " COVID-19 cases")
+          .style("left", function() { 
+            const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+            if ( d3.event.pageX > vw - 200 ) {
+               return d3.event.pageX - 200 + "px"            
+            } else {
+               return d3.event.pageX + "px"
+            }
+          })
+          .style("top", d3.event.pageY - 50 + "px")
+          .attr("class", "tiptext");
+      })
+      .on("mouseout", function (d) {
+        d3.select(this).attr("stroke-width", "0");
+        tooltip.transition().duration(250).style("opacity", 0);
+      })
+      .exit()
+      .data(testing_series).enter().append("g").attr('id','testing_id')
+      .selectAll("rect")
+      .data(function (d) {
+        return d;
+      })
+      .enter()
+      .append("rect")
+      .attr("id", "bar")
+      .attr("class", "cases_school_testing")
+      .attr("x", function (d) {
+        if (d.data.thisDate) {
+          return xScale(d.data.thisDate);
+        }
+      })
+      .attr("y", function (d) {
+        if (yScale(d[1])) {
+          return yScale(d[1]);
+        }
+      })
+      .attr("width", barW)
+      .attr("height", function (d) {
+        if (yScale(d[1])) {
+          return yScale(d[0]) - yScale(d[1]);
+        }
+      })
+      .on("mouseover", function (d) {
+        d3.select(this).attr("stroke", "black");
+        d3.select(this).attr("stroke-width", "1");
+        tooltip.transition().duration(200).style("opacity", 0.9);
+        tooltip
+          .html(
+            d.data.thisDate.toLocaleString("default", { year: 'numeric', month: 'short', day: 'numeric' }) +             
+            "<br>" + numberWithCommas(d[1] - d[0]) + " COVID-19 cases found with in-school testing")
+          .style("left", function() { 
+            const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+            if ( d3.event.pageX > vw - 200 ) {
+               return d3.event.pageX - 200 + "px"            
+            } else {
+               return d3.event.pageX + "px"
+            }
+          })
+          .style("top", d3.event.pageY - 50 + "px")
+          .attr("class", "tiptext");
+      })
+      .on("mouseout", function (d) {
+        d3.select(this).attr("stroke-width", "0");
+        tooltip.transition().duration(250).style("opacity", 0);
+      });
+
+
+
+    mainChart
+      .append("g")
+      .attr("id", "main-timeline")
+      .attr("class", "axis axis--xScale")
+      .attr("transform", "translate("+ barW / 2 +"," + height + ")")
+      .call(xAxis);
+
+    mainChart.append("g").attr("class", "axis axis--yScale").call(yAxis);
+
+
+  function make_y_gridlines() {		
+      return d3.axisLeft(yScale)
+          .ticks( 10 )
+  }
+  
+  // add the X gridlines
+  mainChart.append("g")			
+      .attr("class", "grid")
+      .call(
+        make_y_gridlines()
+          .tickSize(-width)
+          .tickFormat("")
+      )
+}
+
+d3.csv("https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/cumulative-cases-from-school-testing.csv", function (testingdata) {
+  d3.csv("https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/confirmed-cases-cumulative.csv", function (casedata) {
+    schoolTestingCases(casedata, testingdata, '#school-testing-cases');
+  });
+});
+
+
+
