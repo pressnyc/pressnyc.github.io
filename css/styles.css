@@ -115,6 +115,22 @@ section h2:before {
 .key svg {
   margin-left: 2rem;
 }
+
+@media (max-width: 767.9px) { 
+  .key.text-left {
+    text-align: left;
+    text-indent: -1.25rem;
+    padding-left: 1rem;
+  }
+  .key.text-left svg {
+    margin-left: 0;
+  }
+  .key.text-left span {
+    display: block;
+  }
+
+}
+
 .line {
     fill: none;
     stroke-width: 1.5;
