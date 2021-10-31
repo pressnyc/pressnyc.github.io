@@ -9,6 +9,7 @@ h1,h2,h3,h4,h5,h6,h7 {
 }
 h1 { font-size: 2rem; }
 h2 { font-size: 1.25rem; }
+h3 { font-size: 1.2rem; }
 
 
 input[type="search"] {
@@ -80,11 +81,13 @@ path.domain {
 section {
   margin: 5rem 0;
 }
-section h2 {
+section h2,
+section h3 {
   position: relative;
   margin-bottom: 1.25rem;
 }
-section h2:before {
+section h2:before,
+section h3:before {
   content: '';
   height: 2px;
   width: 75px;
@@ -92,6 +95,10 @@ section h2:before {
   position: absolute;
   left: 0px;
   top: -15px;
+}
+
+.no-border:before {
+  background: none;
 }
 
 .source {
