@@ -330,6 +330,182 @@ d3.csv("https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/m
 
 
 
+  
+  
+
+function hospitalization(casedata, variable, selector, height, ticks, tiptext) {
+    
+    var parseCaseDate = d3.timeParse("%m/%d/%Y");
+
+    d3.map(casedata, function (d) {
+      var thisDate = parseCaseDate(d.Date);
+      if (thisDate) {
+        d.thisDate = thisDate;
+        d.StudentsNum = Number( d[variable] );
+      }
+    });
+    
+    var yMax = d3.max(casedata, function (d) { return d.StudentsNum; });;
+        
+    var svg = d3
+      .select(selector)
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .call(responsivefy)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + ",5)");
+
+    var xScale = d3.scaleTime().range([0, width]),
+      yScale = d3.scaleLinear().range([height, 0]);
+
+    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(7),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
+    
+    var yAxis = d3.axisLeft(yScale).ticks( ticks );
+    
+    
+    var mainChart = svg
+      .append("g")
+      .attr("class", "focus")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    xScale.domain(
+      d3.extent(casedata, function (d) {
+        return d.thisDate;
+      })
+    );
+
+    var previous_case_datum = null;
+
+    var loopDate = new Date( xScale.domain()[0] );
+    while(loopDate < xScale.domain()[1]){
+
+       var case_data_exists = 0;
+       casedata.forEach( function (d,i){
+         if ( (d.thisDate) && (d.thisDate.valueOf() == loopDate.valueOf() ) ) {
+            previous_case_datum = d;
+            case_data_exists = 1;
+            return true;
+         }
+       });
+
+      if ((case_data_exists == 0) && (previous_case_datum !== null)) {
+        var thisDatum = { ...previous_case_datum };
+        thisDatum.thisDate = new Date( loopDate );
+        casedata.push(thisDatum);
+      }
+
+      var newDate = loopDate.setDate(loopDate.getDate() + 1);
+      loopDate = new Date(newDate);
+    }
+    
+    var time_difference = xScale.domain()[1] - xScale.domain()[0];  
+    var days_difference = time_difference / (1000 * 60 * 60 * 24);  
+    var barW = width / days_difference;
+
+    yScale.domain([0, yMax]);
+
+
+    var stack = d3.stack().keys(['StudentsNum']);
+    var series = stack(casedata);
+  
+    var groups = mainChart.selectAll("g").data(series).enter().append("g").attr('id','all_cases_id');
+
+    groups
+      .selectAll("rect")
+      .data(function (d) {
+        return d;
+      })
+      .enter()
+      .append("rect")
+      .attr("id", "bar")
+      .attr("class", "cases_all")
+      .attr("x", function (d,i) {
+        if (d.data.thisDate) {
+          return xScale(d.data.thisDate);
+        }
+      })
+      .attr("y", function (d) {
+        if (yScale(d[1])) {
+          return yScale(d[1]);
+        }
+      })
+      .attr("width", barW)
+      .attr("height", function (d) {
+          return yScale(0) - yScale(d[1]);
+      })
+      .on("mouseover", function (d) {
+        d3.select(this).attr("stroke", "black");
+        d3.select(this).attr("stroke-width", "1");
+        tooltip.transition().duration(200).style("opacity", 0.9);
+        tooltip
+          .html(
+            d.data.thisDate.toLocaleString("default", { year: 'numeric', month: 'short', day: 'numeric' }) +             
+            "<br>" + numberWithCommas(d[1] - d[0]) + tiptext)
+          .style("left", function() { 
+            const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+            if ( d3.event.pageX > vw - 200 ) {
+               return d3.event.pageX - 200 + "px"            
+            } else {
+               return d3.event.pageX + "px"
+            }
+          })
+          .style("top", d3.event.pageY - 50 + "px")
+          .attr("class", "tiptext");
+      })
+      .on("mouseout", function (d) {
+        d3.select(this).attr("stroke-width", "0");
+        tooltip.transition().duration(250).style("opacity", 0);
+      });
+
+
+
+    mainChart
+      .append("g")
+      .attr("id", "main-timeline")
+      .attr("class", "axis axis--xScale")
+      .attr("transform", "translate("+ barW / 2 +"," + height + ")")
+      .call(xAxis);
+
+    mainChart.append("g").attr("class", "axis axis--yScale").call(yAxis);
+
+  function make_y_gridlines() {		
+      return d3.axisLeft(yScale)
+          .ticks( ticks )
+  }
+  
+  // add the X gridlines
+  mainChart.append("g")			
+      .attr("class", "grid")
+      .call(
+        make_y_gridlines()
+          .tickSize(-width)
+          .tickFormat("")
+      );
+ 
+   function addLine(theDate) {
+    mainChart
+      .append("rect")
+      .attr("class", "grid")
+      .attr("x", function (d) {
+        return xScale(new Date(theDate));
+      })
+      .attr("y", 0)
+      .attr("width", 1)
+      .attr("height", function (d) {
+        return height;
+      })
+      .style("opacity", 0.3);
+  }
+  addLine('2021-09-13T00:00:00');
+     
+}
+  d3.csv("https://raw.githubusercontent.com/pressnyc/coronavirus-data/master/pressnyc/csv/hospitalization-and-death.csv", function (casedata) {
+    hospitalization(casedata, 'Hospitalization, 0-17', '#hospitalization', 175, 5, ' children hospitalized');
+    hospitalization(casedata, 'Death Count, 0-17', '#death', 100, 3, ' child deaths');
+});
+
+
 
 
 
