@@ -685,6 +685,7 @@ d3.csv("https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/m
 
 
 
+/*
 
 function makeAttendance(data, variable, selector) {
 
@@ -814,12 +815,11 @@ function makeAttendance(data, variable, selector) {
 
 }
 
-
 d3.csv("https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/daily-attendance-mean.csv", function (data) {
   makeAttendance(data,'Attendance','#attendance');
 });
 
-
+*/
 
 
 
