@@ -65,7 +65,7 @@ function makeIncidence(data, selector) {
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleLinear().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(4),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
+    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(7),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
     
     var yAxis = d3.axisLeft(yScale).ticks( yMax / 100 * 5);
 
@@ -538,7 +538,7 @@ function makeChart(data, variable, selector) {
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleLinear().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(4),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
+    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(7),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
     
     var yAxis = d3.axisLeft(yScale).ticks( yMax / 100 * 5);
 
@@ -875,7 +875,7 @@ function schoolTestingCases(casedata, testingdata, selector) {
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleLinear().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(4),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
+    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(7),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
     
     var yAxis = d3.axisLeft(yScale).ticks( 10 );
     
