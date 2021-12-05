@@ -65,7 +65,9 @@ function makeIncidence(data, selector) {
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleLinear().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(7),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(7),  d3.timeDate, 1 ).tickFormat( function(d) { 
+      if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
+    });
     
     var yAxis = d3.axisLeft(yScale).ticks( yMax / 100 * 5);
 
@@ -149,7 +151,9 @@ function makeIncidence(data, selector) {
 
 
 
-    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(7),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(7),  d3.timeDate, 1 ).tickFormat( function(d) { 
+      if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
+    });
 
     svg
       .append("g")
@@ -217,7 +221,9 @@ function makeWeeklyCases(data, selector) {
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleLinear().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(4),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(7),  d3.timeDate, 1 ).tickFormat( function(d) { 
+      if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
+    });
     
 
     var mainChart = svg
@@ -298,8 +304,9 @@ function makeWeeklyCases(data, selector) {
   });
 
 
-
-    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(7),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(7),  d3.timeDate, 1 ).tickFormat( function(d) { 
+      if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
+    });
 
     svg
       .append("g")
@@ -359,7 +366,9 @@ function hospitalization(casedata, variable, selector, height, ticks, tiptext) {
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleLinear().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(7),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(7),  d3.timeDate, 1 ).tickFormat( function(d) { 
+      if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
+    });
     
     var yAxis = d3.axisLeft(yScale).ticks( ticks );
     
@@ -418,7 +427,6 @@ function hospitalization(casedata, variable, selector, height, ticks, tiptext) {
       })
       .enter()
       .append("rect")
-      .attr("id", "bar")
       .attr("class", "cases_all")
       .attr("x", function (d,i) {
         if (d.data.thisDate) {
@@ -511,6 +519,8 @@ function hospitalization(casedata, variable, selector, height, ticks, tiptext) {
 
 
 
+
+
 function makeChart(data, variable, selector) {
 
     var height = 0;
@@ -538,7 +548,9 @@ function makeChart(data, variable, selector) {
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleLinear().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(7),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(7),  d3.timeDate, 1 ).tickFormat( function(d) { 
+      if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
+    });
     
     var yAxis = d3.axisLeft(yScale).ticks( yMax / 100 * 5);
 
@@ -584,7 +596,6 @@ function makeChart(data, variable, selector) {
       })
       .enter()
       .append("rect")
-      .attr("id", "bar")
       .attr("fill", function (d) {
         return colors(d3.select(this.parentNode).datum().key);
       })
@@ -684,148 +695,6 @@ d3.csv("https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/m
 
 
 
-
-/*
-
-function makeAttendance(data, variable, selector) {
-
-    var height = global.height * .5;
-    var yMax = 110;
-    
-    var svg = d3
-      .select(selector)
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .call(responsivefy)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    var parseDate = d3.timeParse("%m/%d/%Y");
-
-    var xScale = d3.scaleTime().range([0, width]),
-      yScale = d3.scaleLinear().range([height, 0]);
-
-    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(4),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
-    
-    var yAxis = d3.axisLeft(yScale).ticks( yMax / 100 * 5);
-
-
-    function colors(category) {
-      var catNumbers = ["Attendance"],
-        catColors = ["#c00",];
-      return catColors[catNumbers.indexOf(category) % catColors.length];
-    }
-
-    var mainChart = svg
-      .append("g")
-      .attr("class", "focus")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    d3.map(data, function (d) {
-      d.thisDate = parseDate(d.Date);
-    });
-
-    var stack = d3.stack().keys([variable]);
-    var series = stack(data);
-
-    xScale.domain(
-      d3.extent(data, function (d) {
-        return d.thisDate;
-      })
-    );
-    xScale.domain([ xScale.domain()[0].addDays(-1), xScale.domain()[1].addDays(1) ]);
-
-    var time_difference = xScale.domain()[1] - xScale.domain()[0];  
-    var days_difference = time_difference / (1000 * 60 * 60 * 24);  
-    var barW = width / days_difference;
-
-    yScale.domain([0, yMax]);
-
-    var groups = mainChart.selectAll("g").data(series).enter().append("g");
-
-
-    groups
-      .selectAll("rect")
-      .data(function (d) {
-        return d;
-      })
-      .enter()
-      .append("rect")
-      .attr("id", "bar")
-      .attr("fill", function (d) {
-        return colors(d3.select(this.parentNode).datum().key);
-      })
-      .attr("x", function (d) {
-        return xScale(d.data.thisDate);
-      })
-      .attr("y", function (d) {
-        if (yScale(d[1])) {
-          return yScale(d[1]);
-        }
-      })
-      .attr("width", barW)
-      .attr("height", function (d) {
-        return yScale(d[0]) - yScale(d[1]);
-      })
-      .on("mouseover", function (d) {
-            
-        d3.select(this).attr("stroke", "black");
-        d3.select(this).attr("stroke-width", "1");
-        tooltip.transition().duration(200).style("opacity", 0.9);
-        tooltip
-          .html(
-            d.data.thisDate.toLocaleString("default", { year: 'numeric', month: 'short', day: 'numeric' }) +             
-            "<br>" + Number.parseFloat(d[1]).toPrecision(4)  + "%"
-            )
-          .style("left", function() { 
-            const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
-            if ( d3.event.pageX > vw - 200 ) {
-               return d3.event.pageX - 200 + "px"            
-            } else {
-               return d3.event.pageX + "px"
-            }
-          })
-          .style("top", d3.event.pageY - 50 + "px")
-          .attr("class", "tiptext");
-      })
-      .on("mouseout", function (d) {
-        d3.select(this).attr("stroke-width", "0");
-        tooltip.transition().duration(250).style("opacity", 0);
-      });
-
-    mainChart
-      .append("g")
-      .attr("id", "main-timeline")
-      .attr("class", "axis axis--xScale")
-      .attr("transform", "translate("+ barW / 2 +"," + height + ")")
-      .call(xAxis);
-
-  function make_y_gridlines() {		
-      return d3.axisLeft(yScale)
-          .ticks( yMax / 100 * 5 )
-          .tickSize(-width)
-          .tickFormat(d => d + "%")
-  }
-  
-  // add the X gridlines
-  mainChart.append("g")			
-      .attr("class", "grid")
-      .call( make_y_gridlines() )
-
-}
-
-d3.csv("https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/daily-attendance-mean.csv", function (data) {
-  makeAttendance(data,'Attendance','#attendance');
-});
-
-*/
-
-
-
-
-
-
 function schoolTestingCases(casedata, testingdata, selector) {
 
     var height = 175;
@@ -875,7 +744,9 @@ function schoolTestingCases(casedata, testingdata, selector) {
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleLinear().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(7),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(7),  d3.timeDate, 1 ).tickFormat( function(d) { 
+      if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
+    });
     
     var yAxis = d3.axisLeft(yScale).ticks( 10 );
     
@@ -959,7 +830,6 @@ function schoolTestingCases(casedata, testingdata, selector) {
       })
       .enter()
       .append("rect")
-      .attr("id", "bar")
       .attr("class", "cases_all")
       .attr("x", function (d,i) {
         if (d.data.thisDate) {
@@ -1008,7 +878,6 @@ function schoolTestingCases(casedata, testingdata, selector) {
       })
       .enter()
       .append("rect")
-      .attr("id", "bar")
       .attr("class", "cases_school_testing")
       .attr("x", function (d) {
         if (d.data.thisDate) {
@@ -1084,4 +953,222 @@ d3.csv("https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/m
 });
 
 
+
+
+
+
+
+function hospitalization_daily(casedata, selector, height, ticks) {
+    
+    var parseCaseDate = d3.timeParse("%m/%d/%Y");
+
+
+    // https://www.d3-graph-gallery.com/graph/barplot_stacked_basicWide.html    
+    // "Hospitalization, 0-4","Hospitalization, 5-12","Hospitalization, 13-17"
+
+    d3.map(casedata, function (d) {
+      var thisDate = parseCaseDate(d.Date);
+      if (thisDate) { d.thisDate = thisDate; }
+    });
+        
+    var svg = d3
+      .select(selector)
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .call(responsivefy)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + ",5)");
+
+    var xScale = d3.scaleTime().range([0, width]),
+      yScale = d3.scaleLinear().range([height, 0]);
+
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(7),  d3.timeDate, 1 ).tickFormat( function(d) { 
+      if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
+    });
+    
+    var yAxis = d3.axisLeft(yScale).ticks( ticks );
+    
+    var mainChart = svg
+      .append("g")
+      .attr("class", "focus")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    xScale.domain(
+      d3.extent(casedata, function (d) {
+        return d.thisDate;
+      })
+    );
+    
+    var time_difference = xScale.domain()[1] - xScale.domain()[0];  
+    var days_difference = time_difference / (1000 * 60 * 60 * 24);  
+    var barW = width / days_difference;
+
+    var subgroups = casedata.columns.slice(4,5)
+
+    yScale.domain(
+      d3.extent(casedata, function (d) {
+        return Number(d['Hospitalization, 0-17']);
+      })
+    );
+
+
+    var stack = d3.stack().keys(subgroups)(casedata);
+   
+    mainChart.append("g")
+    .selectAll("g")
+    .data(stack)
+    .enter().append("g")
+      .selectAll("rect")       
+      .data(function(d) { return d; })
+      .enter()
+        .append("rect")
+        .attr("class", "cases_all")
+        .attr("x", function (d,i) { return xScale( casedata[i].thisDate ) })
+        .attr("y", function (d) { return yScale(d[1]) })
+        .attr("width", barW)
+        .attr("height", function(d) {
+          return yScale(d[0]) - yScale(d[1]);  
+        })
+        .on("mouseover", function (d, i) {
+
+          var tiptext = " children hospitalized";
+          if (d.data["Hospitalization, 0-17"] == 1) {
+            tiptext = " child hospitalized";          
+          }
+                    
+          d3.select(this).attr("stroke", "black");
+          d3.select(this).attr("stroke-width", "1");
+          tooltip.transition().duration(200).style("opacity", 0.9);
+          tooltip
+            .html(
+              d.data.thisDate.toLocaleString("default", { year: 'numeric', month: 'short', day: 'numeric' }) +             
+              "<br>" + d.data["Hospitalization, 0-17"] + tiptext
+              )
+            .style("left", function() { 
+              const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+              if ( d3.event.pageX > vw - 200 ) {
+                 return d3.event.pageX - 200 + "px"            
+              } else {
+                 return d3.event.pageX + "px"
+              }
+            })
+            .style("top", d3.event.pageY - 50 + "px")
+            .attr("class", "tiptext");
+        })
+        .on("mouseout", function (d) {
+          d3.select(this).attr("stroke-width", "0");
+          tooltip.transition().duration(250).style("opacity", 0);
+        });
+
+
+/*
+    var subgroups = casedata.columns.slice(1,4)
+
+    var color = d3.scaleOrdinal()
+      .domain(subgroups)
+      .range(['#e44a1c','#377eb8','#4daf4a'])
+
+    yScale.domain(
+      d3.extent(casedata, function (d) {
+        return Number(d['Hospitalization, 0-17']);
+      })
+    );
+
+
+    var stack = d3.stack().keys(subgroups)(casedata);
+   
+    mainChart.append("g")
+    .selectAll("g")
+    .data(stack)
+    .enter().append("g")
+      .attr("fill", function(d) { return color(d.key); })
+      .selectAll("rect")       
+      .data(function(d) { return d; })
+      .enter()
+        .append("rect")
+        .attr("x", function (d,i) { return xScale( casedata[i].thisDate ) })
+        .attr("y", function (d) { return yScale(d[1]) })
+        .attr("width", barW)
+        .attr("height", function(d) {
+          return yScale(d[0]) - yScale(d[1]);  
+        })
+        .on("mouseover", function (d, i) {
+                    
+          d3.select(this).attr("stroke", "black");
+          d3.select(this).attr("stroke-width", "1");
+          tooltip.transition().duration(200).style("opacity", 0.9);
+          tooltip
+            .html(
+              d.data.thisDate.toLocaleString("default", { year: 'numeric', month: 'short', day: 'numeric' }) +             
+//              "<br>" + numberWithCommas(d[1] - d[0]) 
+              "<br>Age 0-4: " + d.data["Hospitalization, 0-4"] +
+              "<br>Age 5-12: " + d.data["Hospitalization, 5-12"] +
+              "<br>Age 13-17: " + d.data["Hospitalization, 13-17"] +         
+              "<br>Age 0-17: " + d.data["Hospitalization, 0-17"]            
+              )
+
+
+            .style("left", function() { 
+              const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+              if ( d3.event.pageX > vw - 200 ) {
+                 return d3.event.pageX - 200 + "px"            
+              } else {
+                 return d3.event.pageX + "px"
+              }
+            })
+            .style("top", d3.event.pageY - 50 + "px")
+            .attr("class", "tiptext");
+        })
+        .on("mouseout", function (d) {
+          d3.select(this).attr("stroke-width", "0");
+          tooltip.transition().duration(250).style("opacity", 0);
+        });
+*/
+
+
+
+    mainChart
+      .append("g")
+      .attr("id", "main-timeline")
+      .attr("class", "axis axis--xScale")
+      .attr("transform", "translate("+ barW / 2 +"," + height + ")")
+      .call(xAxis);
+
+    mainChart.append("g").attr("class", "axis axis--yScale").call(yAxis);
+
+  function make_y_gridlines() {		
+      return d3.axisLeft(yScale)
+          .ticks( ticks )
+  }
+  
+  // add the X gridlines
+  mainChart.append("g")			
+      .attr("class", "grid")
+      .call(
+        make_y_gridlines()
+          .tickSize(-width)
+          .tickFormat("")
+      );
+ 
+   function addLine(theDate) {
+    mainChart
+      .append("rect")
+      .attr("class", "grid")
+      .attr("x", function (d) {
+        return xScale(new Date(theDate));
+      })
+      .attr("y", 0)
+      .attr("width", 1)
+      .attr("height", function (d) {
+        return height;
+      })
+      .style("opacity", 0.3);
+  }
+  addLine('2021-09-13T00:00:00');
+     
+}
+  d3.csv("https://raw.githubusercontent.com/pressnyc/coronavirus-data/master/pressnyc/csv/hospitalization-and-death-daily.csv", function (casedata) {
+    hospitalization_daily(casedata, '#hospitalization-daliy', 175, 5);
+});
 
