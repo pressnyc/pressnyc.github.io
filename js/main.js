@@ -262,8 +262,8 @@ function makeWeeklyCases(data, selector) {
 
     yScale.domain([0,
       d3.max(data, function (d) {
-        return d.Total + 10;
-      })]
+        return d.Total;
+      }) + 110]
     );
     yMax = yScale.domain()[1];
 
@@ -328,7 +328,6 @@ function makeWeeklyCases(data, selector) {
 
   function make_y_gridlines() {		
       return d3.axisLeft(yScale)
-          .ticks( yMax / 100 )
           .tickSize(-width)
   }
   
