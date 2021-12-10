@@ -49,7 +49,6 @@ var tooltip = d3.select("body").append("div").attr("class", "tooltip");
 function makeIncidence(data, selector) {
 
     var height = global.height;
-    var yMax = 110;
     
     var svg = d3
       .select(selector)
@@ -69,8 +68,6 @@ function makeIncidence(data, selector) {
       if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
     });
     
-    var yAxis = d3.axisLeft(yScale).ticks( yMax / 100 * 5);
-
     var mainChart = svg
       .append("g")
       .attr("class", "focus")
@@ -81,6 +78,20 @@ function makeIncidence(data, selector) {
     });
 
 
+
+    var yMax = d3.extent(data, function (d) { 
+        if (d.thisDate > parseDate('09/01/2021') ) {
+          return Math.max(
+            Number(d['age_all_ages']),
+            Number(d['age_0_4']),
+            Number(d['age_5_12']),
+            Number(d['age_13_17']),
+            Number(d['age_18_24'])
+          );
+        }
+      })[1] + 10;
+    
+  
     xScale.domain(
       d3.extent(data, function (d) {
         return d.thisDate;
@@ -97,7 +108,7 @@ function makeIncidence(data, selector) {
 
 
     var yScale = d3.scaleLinear()
-        .domain([0, 260]) // input 
+        .domain([0, yMax]) // input 
         .range([height, 0]); // output 
 
 
@@ -164,7 +175,7 @@ function makeIncidence(data, selector) {
 
   function make_y_gridlines() {		
       return d3.axisLeft(yScale)
-          .ticks( yMax / 100 * 5 )
+          .ticks( yMax / 100 * 2 )
           .tickSize(-width)
           .tickFormat(d => d)
   }
