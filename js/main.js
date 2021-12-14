@@ -562,7 +562,7 @@ function makeChart(data, variable, selector) {
       if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
     });
     
-    var yAxis = d3.axisLeft(yScale).ticks( yMax / 100 * 5);
+    var yAxis = d3.axisLeft(yScale).ticks( 10 );
 
 
     function colors(category) {
@@ -659,7 +659,7 @@ function makeChart(data, variable, selector) {
 
   function make_y_gridlines() {		
       return d3.axisLeft(yScale)
-          .ticks( yMax / 100 * 5 )
+          .ticks( 10 )
   }
   
   // add the X gridlines
