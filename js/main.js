@@ -553,7 +553,7 @@ function makeChart(data, variable, selector) {
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    var parseDate = d3.timeParse("Confirmed Positive COVID Cases: %B %d, %Y as of 6 PM");
+    var parseDate = d3.timeParse("Confirmed Positive COVID Cases, %B %d, %Y at 6 PM");
 
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleLinear().range([height, 0]);
