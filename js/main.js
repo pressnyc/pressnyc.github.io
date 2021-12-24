@@ -175,9 +175,9 @@ function makeIncidence(data, selector) {
 
   function make_y_gridlines() {		
       return d3.axisLeft(yScale)
-          .ticks( yMax / 100 * 2 )
+          .ticks( yMax / 100 )
           .tickSize(-width)
-          .tickFormat(d => d)
+          .tickFormat(d => numberWithCommas(d) )
   }
   
   // add the X gridlines
