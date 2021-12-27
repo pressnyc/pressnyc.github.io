@@ -778,7 +778,7 @@ function schoolTestingCases(casedata, testingdata, selector) {
     var previous_case_datum = null;
 
     var loopDate = new Date( xScale.domain()[0] );
-    while(loopDate < xScale.domain()[1]){
+    while(loopDate <= xScale.domain()[1]){
 
        var case_data_exists = 0;
        casedata.forEach( function (d,i){
@@ -794,8 +794,7 @@ function schoolTestingCases(casedata, testingdata, selector) {
         thisDatum.thisDate = new Date( loopDate );
         casedata.push(thisDatum);
       }
-
-
+      
        var testing_data_exists = 0;
        testingdata.forEach( function (d,i){
          if (d.thisDate.valueOf() == loopDate.valueOf() ) {
@@ -830,7 +829,6 @@ function schoolTestingCases(casedata, testingdata, selector) {
     var testing_stack = d3.stack().keys(['StudentsNum']);
     var testing_series = testing_stack(testingdata);
 
-
     var groups = mainChart.selectAll("g").data(series).enter().append("g").attr('id','all_cases_id');
 
     groups
@@ -842,20 +840,14 @@ function schoolTestingCases(casedata, testingdata, selector) {
       .append("rect")
       .attr("class", "cases_all")
       .attr("x", function (d,i) {
-        if (d.data.thisDate) {
           return xScale(d.data.thisDate);
-        }
       })
       .attr("y", function (d) {
-        if (yScale(d[1])) {
           return yScale(d[1]);
-        }
       })
       .attr("width", barW)
       .attr("height", function (d) {
-        if (yScale(d[1])) {
           return yScale(d[0]) - yScale(d[1]);
-        }
       })
       .on("mouseover", function (d) {
         d3.select(this).attr("stroke", "black");
