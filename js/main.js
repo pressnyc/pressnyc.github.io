@@ -628,7 +628,7 @@ function makeChart(data, variable, selector) {
         tooltip
           .html(
             d.data.thisDate.toLocaleString("default", { year: 'numeric', month: 'short', day: 'numeric' }) +             
-            "<br>" + (d[1] - d[0]) + " Cases")
+            "<br>" + numberWithCommas(d[1] - d[0]) + " Cases")
           .style("left", function() { 
             const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
             if ( d3.event.pageX > vw - 200 ) {
