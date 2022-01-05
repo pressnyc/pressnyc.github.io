@@ -1174,3 +1174,143 @@ function hospitalization_daily(casedata, selector, height, ticks) {
     hospitalization_daily(casedata, '#hospitalization-daliy', 175, 5);
 });
 
+
+
+
+
+
+
+
+
+function makeAttendance(data, variable, selector) {
+
+    var height = global.height * .5;
+    var yMax = 110;
+    
+    var svg = d3
+      .select(selector)
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .call(responsivefy)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var parseDate = d3.timeParse("%m/%d/%Y");
+
+    var xScale = d3.scaleTime().range([0, width]),
+      yScale = d3.scaleLinear().range([height, 0]);
+
+    var xAxis = d3.axisBottom(xScale).ticks(d3.timeDay.every(4),  d3.timeDate, 1).tickFormat(d3.timeFormat('%b %e'));
+    
+    var yAxis = d3.axisLeft(yScale).ticks( yMax / 100 * 5);
+
+
+    function colors(category) {
+      var catNumbers = ["Attendance"],
+        catColors = ["#c00",];
+      return catColors[catNumbers.indexOf(category) % catColors.length];
+    }
+
+    var mainChart = svg
+      .append("g")
+      .attr("class", "focus")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    d3.map(data, function (d) {
+      d.thisDate = parseDate(d.Date);
+    });
+
+    var stack = d3.stack().keys([variable]);
+    var series = stack(data);
+
+    xScale.domain(
+      d3.extent(data, function (d) {
+        return d.thisDate;
+      })
+    );
+    xScale.domain([ xScale.domain()[0].addDays(-1), xScale.domain()[1].addDays(1) ]);
+
+    var time_difference = xScale.domain()[1] - xScale.domain()[0];  
+    var days_difference = time_difference / (1000 * 60 * 60 * 24);  
+    var barW = width / days_difference;
+
+    yScale.domain([0, yMax]);
+
+    var groups = mainChart.selectAll("g").data(series).enter().append("g");
+
+
+    groups
+      .selectAll("rect")
+      .data(function (d) {
+        return d;
+      })
+      .enter()
+      .append("rect")
+      .attr("id", "bar")
+      .attr("fill", function (d) {
+        return colors(d3.select(this.parentNode).datum().key);
+      })
+      .attr("x", function (d) {
+        return xScale(d.data.thisDate);
+      })
+      .attr("y", function (d) {
+        if (yScale(d[1])) {
+          return yScale(d[1]);
+        }
+      })
+      .attr("width", barW)
+      .attr("height", function (d) {
+        return yScale(d[0]) - yScale(d[1]);
+      })
+      .on("mouseover", function (d) {
+            
+        d3.select(this).attr("stroke", "black");
+        d3.select(this).attr("stroke-width", "1");
+        tooltip.transition().duration(200).style("opacity", 0.9);
+        tooltip
+          .html(
+            d.data.thisDate.toLocaleString("default", { year: 'numeric', month: 'short', day: 'numeric' }) +             
+            "<br>" + Number.parseFloat(d[1]).toPrecision(4)  + "%"
+            )
+          .style("left", function() { 
+            const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+            if ( d3.event.pageX > vw - 200 ) {
+               return d3.event.pageX - 200 + "px"            
+            } else {
+               return d3.event.pageX + "px"
+            }
+          })
+          .style("top", d3.event.pageY - 50 + "px")
+          .attr("class", "tiptext");
+      })
+      .on("mouseout", function (d) {
+        d3.select(this).attr("stroke-width", "0");
+        tooltip.transition().duration(250).style("opacity", 0);
+      });
+
+    mainChart
+      .append("g")
+      .attr("id", "main-timeline")
+      .attr("class", "axis axis--xScale")
+      .attr("transform", "translate("+ barW / 2 +"," + height + ")")
+      .call(xAxis);
+
+  function make_y_gridlines() {		
+      return d3.axisLeft(yScale)
+          .ticks( yMax / 100 * 5 )
+          .tickSize(-width)
+          .tickFormat(d => d + "%")
+  }
+  
+  // add the X gridlines
+  mainChart.append("g")			
+      .attr("class", "grid")
+      .call( make_y_gridlines() )
+
+}
+
+d3.csv("https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/daily-attendance-mean.csv", function (data) {
+  makeAttendance(data,'Attendance','#attendance');
+});
+
