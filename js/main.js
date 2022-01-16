@@ -37,8 +37,6 @@ function responsivefy(svg) {
   }
 }
 
-
-
 var tooltip = d3.select("body").append("div").attr("class", "tooltip");
 
 
@@ -175,7 +173,6 @@ function makeIncidence(data, selector) {
 
   function make_y_gridlines() {		
       return d3.axisLeft(yScale)
-          .ticks( yMax / 100 )
           .tickSize(-width)
           .tickFormat(d => numberWithCommas(d) )
   }
