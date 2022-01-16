@@ -731,7 +731,9 @@ function schoolTestingCases(casedata, testingdata, selector) {
 
 
     var last_date = parseCaseDate( casedata[0]['Title']);
-    d3.select('#cumulative-date').html( last_date.toLocaleString("default", { year: 'numeric', month: 'long', day: 'numeric' }) );
+    if (last_date) {
+      d3.select('#cumulative-date').html( last_date.toLocaleString("default", { year: 'numeric', month: 'long', day: 'numeric' }) );
+    }
     var testing_percent = testingdata[0]['StudentsNum'] / casedata[0]['StudentsNum'] * 100;
     testing_percent = testing_percent.toPrecision(2) + '%';
     d3.select('#testing-percent').html(testing_percent);
