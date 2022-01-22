@@ -97,8 +97,9 @@ function makeIncidence(data, selector) {
     );
     xScale.domain([ new Date('09/01/2021'), xScale.domain()[1] ]);
 
-
-    d3.select('#week-end').html( xScale.domain()[1] .toLocaleString("default", { year: 'numeric', month: 'long', day: 'numeric' }) );
+    let endDate = xScale.domain()[1].toLocaleString("default", { year: 'numeric', month: 'long', day: 'numeric' } );
+    
+    d3.select('#week-end').html( endDate );
 
     var percent_5_12 = data[ data.length - 1 ]['age_5_12'] / data[ data.length - 1 ]['age_all_ages'] * 100;  
     percent_5_12 = percent_5_12.toPrecision(4) + '%';    
@@ -708,9 +709,15 @@ function schoolTestingCases(casedata, testingdata, selector) {
     
 
     var parseCaseDate = d3.timeParse("Confirmed Cumulative Positive COVID Cases: September 13, 2021 - %B %d, %Y at 6 PM");
+    var parseCaseDateAlt = d3.timeParse("Cumulative Reported Cases: September 13, 2021 - %B %d, %Y at 6 PM");
 
     d3.map(casedata, function (d) {
       var thisDate = parseCaseDate(d.Title);
+      if (thisDate) {
+        d.thisDate = thisDate;
+        d.StudentsNum = Number( d.Students.replace(',','') );
+      }
+      thisDate = parseCaseDateAlt(d.Title);
       if (thisDate) {
         d.thisDate = thisDate;
         d.StudentsNum = Number( d.Students.replace(',','') );
@@ -730,10 +737,11 @@ function schoolTestingCases(casedata, testingdata, selector) {
 
 
 
-    var last_date = parseCaseDate( casedata[0]['Title']);
+    var last_date = parseCaseDateAlt( casedata[0]['Title']);
     if (last_date) {
       d3.select('#cumulative-date').html( last_date.toLocaleString("default", { year: 'numeric', month: 'long', day: 'numeric' }) );
     }
+
     var testing_percent = testingdata[0]['StudentsNum'] / casedata[0]['StudentsNum'] * 100;
     testing_percent = testing_percent.toPrecision(2) + '%';
     d3.select('#testing-percent').html(testing_percent);
