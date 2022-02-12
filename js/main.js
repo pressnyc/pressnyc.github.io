@@ -4,7 +4,7 @@ var global = {
   height: 250
 }
 
-var margin = { top: 0, right: 50, bottom: 25, left: 20 },
+var margin = { top: 10, right: 50, bottom: 30, left: 20 },
   width = 800 - margin.left - margin.right;
 
 
@@ -52,17 +52,16 @@ function makeIncidence(data, selector) {
       .select(selector)
       .append("svg")
       .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+      .attr("height", height + margin.top + (margin.bottom ))
       .call(responsivefy)
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var parseDate = d3.timeParse("%m/%d/%Y");
 
-    var xScale = d3.scaleTime().range([0, width]),
-      yScale = d3.scaleLinear().range([height, 0]);
+    var xScale = d3.scaleTime().range([0, width]);
 
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(7),  d3.timeDate, 1 ).tickFormat( function(d) { 
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(14),  d3.timeDate, 1 ).tickFormat( function(d) { 
       if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
     });
     
@@ -106,7 +105,7 @@ function makeIncidence(data, selector) {
     d3.select('#week-percent').html( percent_5_12 );
 
 
-    var yScale = d3.scaleLinear()
+    var yScale = d3.scaleSqrt()
         .domain([0, yMax]) // input 
         .range([height, 0]); // output 
 
@@ -161,7 +160,7 @@ function makeIncidence(data, selector) {
 
 
 
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(7),  d3.timeDate, 1 ).tickFormat( function(d) { 
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(14),  d3.timeDate, 1 ).tickFormat( function(d) { 
       if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
     });
 
@@ -169,7 +168,7 @@ function makeIncidence(data, selector) {
       .append("g")
       .attr("id", "main-timeline")
       .attr("class", "axis axis--xScale")
-      .attr("transform", "translate(0," + height + ")")
+      .attr("transform", "translate(0," + (height + (margin.bottom / 3)) + ")")
       .call(xAxis);
 
   function make_y_gridlines() {		
@@ -227,10 +226,9 @@ function makeWeeklyCases(data, selector) {
 
     var parseDate = d3.timeParse("%Y-%m-%d");
 
-    var xScale = d3.scaleTime().range([0, width]),
-      yScale = d3.scaleLinear().range([height, 0]);
+    var xScale = d3.scaleTime().range([0, width]);
 
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(7),  d3.timeDate, 1 ).tickFormat( function(d) { 
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(14),  d3.timeDate, 1 ).tickFormat( function(d) { 
       if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
     });
     
@@ -255,7 +253,7 @@ function makeWeeklyCases(data, selector) {
       })
     ]);
 
-    var yScale = d3.scaleLinear()
+    var yScale = d3.scaleSqrt()
         .range([height, 0]); // output 
 
     yScale.domain([0,
@@ -313,7 +311,7 @@ function makeWeeklyCases(data, selector) {
   });
 
 
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(7),  d3.timeDate, 1 ).tickFormat( function(d) { 
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(14),  d3.timeDate, 1 ).tickFormat( function(d) { 
       if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
     });
 
@@ -321,7 +319,7 @@ function makeWeeklyCases(data, selector) {
       .append("g")
       .attr("id", "main-timeline")
       .attr("class", "axis axis--xScale")
-      .attr("transform", "translate(0," + height + ")")
+      .attr("transform", "translate(0," + (height + (margin.bottom / 3)) + ")")
       .call(xAxis);
 
   function make_y_gridlines() {		
@@ -374,7 +372,7 @@ function hospitalization(casedata, variable, selector, height, ticks, tiptext) {
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleLinear().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(7),  d3.timeDate, 1 ).tickFormat( function(d) { 
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(14),  d3.timeDate, 1 ).tickFormat( function(d) { 
       if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
     });
     
@@ -554,9 +552,9 @@ function makeChart(data, variable, selector) {
     var parseDate = d3.timeParse("Confirmed Positive COVID Cases, %B %d, %Y at 6 PM");
 
     var xScale = d3.scaleTime().range([0, width]),
-      yScale = d3.scaleLinear().range([height, 0]);
+      yScale = d3.scaleSqrt().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(7),  d3.timeDate, 1 ).tickFormat( function(d) { 
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(14),  d3.timeDate, 1 ).tickFormat( function(d) { 
       if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
     });
     
@@ -761,7 +759,7 @@ function schoolTestingCases(casedata, testingdata, selector) {
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleLinear().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(7),  d3.timeDate, 1 ).tickFormat( function(d) { 
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(14),  d3.timeDate, 1 ).tickFormat( function(d) { 
       if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
     });
     
@@ -990,9 +988,9 @@ function hospitalization_daily(casedata, selector, height, ticks) {
       .attr("transform", "translate(" + margin.left + ",5)");
 
     var xScale = d3.scaleTime().range([0, width]),
-      yScale = d3.scaleLinear().range([height, 0]);
+      yScale = d3.scaleSqrt().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(7),  d3.timeDate, 1 ).tickFormat( function(d) { 
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(14),  d3.timeDate, 1 ).tickFormat( function(d) { 
       if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
     });
     
@@ -1208,7 +1206,7 @@ function makeAttendance(data, variable, selector) {
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleLinear().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(7), d3.timeDate, 1 ).tickFormat( function(d) { 
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(14), d3.timeDate, 1 ).tickFormat( function(d) { 
       if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
     });
     
