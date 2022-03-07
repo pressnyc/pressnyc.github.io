@@ -527,9 +527,25 @@ function hospitalization(casedata, variable, selector, height, ticks, tiptext) {
 
 
 
-function makeChart(data, variable, selector) {
+function makeChart(data, variable, selector, limit) {
+
+    var parseDate = d3.timeParse("Confirmed Positive COVID Cases, %B %d, %Y at 6 PM");
+
+    d3.map(data, function (d) {
+      d.thisDate = parseDate(d.Title);
+    });
+
+
+
+    if (limit) {      
+        let cutoff = new Date();
+        cutoff.setDate( cutoff.getDate() - limit );
+        data = data.filter(d => d.thisDate >= cutoff);     
+    }
+
 
     var height = 0;
+    
     var yMax = d3.max(data, function (d) { return Number(d[variable]); });;
 
     if (global.yMax == 0) {
@@ -537,6 +553,11 @@ function makeChart(data, variable, selector) {
     } else {      
       height = ( global.height - margin.top - margin.bottom )  * yMax / global.yMax ;    
     }
+
+    if (limit) {      
+      height = 150;
+    }
+
     global.yMax = yMax;
 
     
@@ -549,10 +570,14 @@ function makeChart(data, variable, selector) {
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    var parseDate = d3.timeParse("Confirmed Positive COVID Cases, %B %d, %Y at 6 PM");
 
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleSqrt().range([height, 0]);
+
+    if (limit) {      
+      yScale = d3.scaleLinear().range([height, 0]);
+    }
+
 
     var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(14),  d3.timeDate, 1 ).tickFormat( function(d) { 
       if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
@@ -560,6 +585,11 @@ function makeChart(data, variable, selector) {
     
     var yAxis = d3.axisLeft(yScale).ticks( 10 );
 
+    if (limit) {
+        xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(2),  d3.timeDate, 1 ).tickFormat( function(d) { 
+              if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
+            });    
+    }
 
     function colors(category) {
       var catNumbers = ["Students", "Staff"],
@@ -571,10 +601,6 @@ function makeChart(data, variable, selector) {
       .append("g")
       .attr("class", "focus")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    d3.map(data, function (d) {
-      d.thisDate = parseDate(d.Title);
-    });
 
     var stack = d3.stack().keys([variable]);
     var series = stack(data);
@@ -696,6 +722,7 @@ function makeChart(data, variable, selector) {
 d3.csv("https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/confirmed-cases-daily.csv", function (data) {
   makeChart(data,'Students','#students');
   makeChart(data,'Staff','#staff');
+  makeChart(data,'Students','#studentsLimit',30);
 });
 
 
