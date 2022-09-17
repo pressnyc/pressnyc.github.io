@@ -372,7 +372,7 @@ function hospitalization(casedata, variable, selector, height, ticks, tiptext) {
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleLinear().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(14),  d3.timeDate, 1 ).tickFormat( function(d) { 
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(31),  d3.timeDate, 1 ).tickFormat( function(d) { 
       if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
     });
     
@@ -1017,7 +1017,7 @@ function hospitalization_daily(casedata, selector, height, ticks) {
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleSqrt().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(14),  d3.timeDate, 1 ).tickFormat( function(d) { 
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(31),  d3.timeDate, 1 ).tickFormat( function(d) { 
       if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
     });
     
@@ -1264,7 +1264,7 @@ function makeAttendance(data, variable, selector) {
         return d.thisDate;
       })
     );
-    xScale.domain([ xScale.domain()[0].addDays(-1), xScale.domain()[1].addDays(1) ]);
+    xScale.domain([ parseDate('9/12/2022'), xScale.domain()[1].addDays(1) ]);
 
     var time_difference = xScale.domain()[1] - xScale.domain()[0];  
     var days_difference = time_difference / (1000 * 60 * 60 * 24);  
