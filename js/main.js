@@ -736,18 +736,21 @@ function schoolTestingCases(casedata, selector) {
     var height = 175;
     
     margin.left = 25;
+
+
+    const startDate = new Date('2022-09-08T00:00:00');
     
     var parseCaseDate = d3.timeParse("Confirmed Cumulative Positive COVID Cases: September 13, 2021 - %B %d, %Y at 6 PM");
     var parseCaseDateAlt = d3.timeParse("Cumulative Reported Cases: September 13, 2021 - %B %d, %Y at 6 PM");
 
     d3.map(casedata, function (d) {
       var thisDate = parseCaseDate(d.Title);
-      if (thisDate) {
+      if (thisDate && thisDate >= startDate) {
         d.thisDate = thisDate;
         d.StudentsNum = Number( d.Students.replace(',','') );
       }
       thisDate = parseCaseDateAlt(d.Title);
-      if (thisDate) {
+      if (thisDate && thisDate >= startDate) {
         d.thisDate = thisDate;
         d.StudentsNum = Number( d.Students.replace(',','') );
       }
@@ -759,7 +762,6 @@ function schoolTestingCases(casedata, selector) {
     }
 
     var yMax = d3.max(casedata, function (d) { return d.StudentsNum; });;
-        
         
     var svg = d3
       .select(selector)
@@ -785,20 +787,30 @@ function schoolTestingCases(casedata, selector) {
       .attr("class", "focus")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    xScale.domain([new Date('2022-09-07'),
+
+    xScale.domain([startDate,
       d3.extent(casedata, function (d) {
         return d.thisDate;
       })[1] ]
     );
 
 
+    
+
     var previous_case_datum = null;
 
-    var loopDate = new Date( xScale.domain()[0] );
+    var loopDate = startDate;
+    
     while(loopDate <= xScale.domain()[1]){
+
 
        var case_data_exists = 0;
        casedata.forEach( function (d,i){
+
+         if (d.thisDate) {
+          console.log( d.thisDate.valueOf(), loopDate.valueOf() );
+         } 
+
          if ( (d.thisDate) && (d.thisDate.valueOf() == loopDate.valueOf() ) ) {
             previous_case_datum = d;
             case_data_exists = 1;
@@ -811,9 +823,8 @@ function schoolTestingCases(casedata, selector) {
         thisDatum.thisDate = new Date( loopDate );
         casedata.push(thisDatum);
       }
-
-      var newDate = loopDate.setDate(loopDate.getDate() + 1);
-      loopDate = new Date(newDate);
+      
+      loopDate = loopDate.addDays(1);
     }
     
 
@@ -825,7 +836,7 @@ function schoolTestingCases(casedata, selector) {
 
     var stack = d3.stack().keys(['StudentsNum']);
     var series = stack(casedata);
-  
+    
     var groups = mainChart.selectAll("g").data(series).enter().append("g").attr('id','all_cases_id');
 
     groups
