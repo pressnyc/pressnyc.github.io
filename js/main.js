@@ -728,11 +728,15 @@ d3.csv("https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/m
 
 
 
-function schoolTestingCases(casedata, testingdata, selector) {
+
+// All Confirmed Positive COVID Student Cases (red) and Cases Found By In-School Testing (purple)
+
+function schoolTestingCases(casedata, selector) {
 
     var height = 175;
     
-
+    margin.left = 25;
+    
     var parseCaseDate = d3.timeParse("Confirmed Cumulative Positive COVID Cases: September 13, 2021 - %B %d, %Y at 6 PM");
     var parseCaseDateAlt = d3.timeParse("Cumulative Reported Cases: September 13, 2021 - %B %d, %Y at 6 PM");
 
@@ -749,30 +753,13 @@ function schoolTestingCases(casedata, testingdata, selector) {
       }
     });
           
-    
-    var parseTestDate = d3.timeParse("9/13/2021 through %m/%d/%Y");
-
-    d3.map(testingdata, function (d) {
-      var thisDate = parseTestDate(d['Positive cases identified by school testing']);
-      if (thisDate) {
-        d.thisDate = thisDate;
-        d.StudentsNum = Number( d.Students.replace(',','') );
-      }
-    });
-
-
-
     var last_date = parseCaseDateAlt( casedata[0]['Title']);
     if (last_date) {
       d3.select('#cumulative-date').html( last_date.toLocaleString("default", { year: 'numeric', month: 'long', day: 'numeric' }) );
     }
 
-    var testing_percent = testingdata[0]['StudentsNum'] / casedata[0]['StudentsNum'] * 100;
-    testing_percent = testing_percent.toPrecision(2) + '%';
-    d3.select('#testing-percent').html(testing_percent);
-      
-
     var yMax = d3.max(casedata, function (d) { return d.StudentsNum; });;
+        
         
     var svg = d3
       .select(selector)
@@ -786,7 +773,7 @@ function schoolTestingCases(casedata, testingdata, selector) {
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleLinear().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(14),  d3.timeDate, 1 ).tickFormat( function(d) { 
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(7),  d3.timeDate, 1 ).tickFormat( function(d) { 
       if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
     });
     
@@ -798,15 +785,13 @@ function schoolTestingCases(casedata, testingdata, selector) {
       .attr("class", "focus")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    xScale.domain(
+    xScale.domain([new Date('2022-09-07'),
       d3.extent(casedata, function (d) {
         return d.thisDate;
-      })
+      })[1] ]
     );
 
 
-
-    var previous_testing_datum = null;
     var previous_case_datum = null;
 
     var loopDate = new Date( xScale.domain()[0] );
@@ -826,22 +811,6 @@ function schoolTestingCases(casedata, testingdata, selector) {
         thisDatum.thisDate = new Date( loopDate );
         casedata.push(thisDatum);
       }
-      
-       var testing_data_exists = 0;
-       testingdata.forEach( function (d,i){
-         if (d.thisDate.valueOf() == loopDate.valueOf() ) {
-            previous_testing_datum = d;
-            testing_data_exists = 1;
-            return true;
-         }
-       });
-
-      if ((testing_data_exists == 0) && (previous_testing_datum !== null)) {
-        var thisDatum = { ...previous_testing_datum };
-        thisDatum.thisDate = new Date( loopDate );
-        testingdata.push(thisDatum);
-      }
-
 
       var newDate = loopDate.setDate(loopDate.getDate() + 1);
       loopDate = new Date(newDate);
@@ -852,15 +821,11 @@ function schoolTestingCases(casedata, testingdata, selector) {
     var days_difference = time_difference / (1000 * 60 * 60 * 24);  
     var barW = width / days_difference;
 
-    yScale.domain([0, yMax]);
-
+    yScale.domain([175000, yMax]);
 
     var stack = d3.stack().keys(['StudentsNum']);
     var series = stack(casedata);
   
-    var testing_stack = d3.stack().keys(['StudentsNum']);
-    var testing_series = testing_stack(testingdata);
-
     var groups = mainChart.selectAll("g").data(series).enter().append("g").attr('id','all_cases_id');
 
     groups
@@ -903,57 +868,7 @@ function schoolTestingCases(casedata, testingdata, selector) {
       .on("mouseout", function (d) {
         d3.select(this).attr("stroke-width", "0");
         tooltip.transition().duration(250).style("opacity", 0);
-      })
-      .exit()
-      .data(testing_series).enter().append("g").attr('id','testing_id')
-      .selectAll("rect")
-      .data(function (d) {
-        return d;
-      })
-      .enter()
-      .append("rect")
-      .attr("class", "cases_school_testing")
-      .attr("x", function (d) {
-        if (d.data.thisDate) {
-          return xScale(d.data.thisDate);
-        }
-      })
-      .attr("y", function (d) {
-        if (yScale(d[1])) {
-          return yScale(d[1]);
-        }
-      })
-      .attr("width", barW)
-      .attr("height", function (d) {
-        if (yScale(d[1])) {
-          return yScale(d[0]) - yScale(d[1]);
-        }
-      })
-      .on("mouseover", function (d) {
-        d3.select(this).attr("stroke", "black");
-        d3.select(this).attr("stroke-width", "1");
-        tooltip.transition().duration(200).style("opacity", 0.9);
-        tooltip
-          .html(
-            d.data.thisDate.toLocaleString("default", { year: 'numeric', month: 'short', day: 'numeric' }) +             
-            "<br>" + numberWithCommas(d[1] - d[0]) + " COVID-19 cases found with in-school testing")
-          .style("left", function() { 
-            const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
-            if ( d3.event.pageX > vw - 200 ) {
-               return d3.event.pageX - 200 + "px"            
-            } else {
-               return d3.event.pageX + "px"
-            }
-          })
-          .style("top", d3.event.pageY - 50 + "px")
-          .attr("class", "tiptext");
-      })
-      .on("mouseout", function (d) {
-        d3.select(this).attr("stroke-width", "0");
-        tooltip.transition().duration(250).style("opacity", 0);
       });
-
-
 
     mainChart
       .append("g")
@@ -964,11 +879,10 @@ function schoolTestingCases(casedata, testingdata, selector) {
 
     mainChart.append("g").attr("class", "axis axis--yScale").call(yAxis);
 
-
-  function make_y_gridlines() {		
-      return d3.axisLeft(yScale)
-          .ticks( 10 )
-  }
+    function make_y_gridlines() {		
+        return d3.axisLeft(yScale)
+            .ticks( 10 )
+    }
   
   // add the X gridlines
   mainChart.append("g")			
@@ -980,11 +894,9 @@ function schoolTestingCases(casedata, testingdata, selector) {
       )
 }
 
-d3.csv("https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/cumulative-cases-from-school-testing.csv", function (testingdata) {
   d3.csv("https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/confirmed-cases-cumulative.csv", function (casedata) {
-    schoolTestingCases(casedata, testingdata, '#school-testing-cases');
+    schoolTestingCases(casedata, '#school-testing-cases');
   });
-});
 
 
 
