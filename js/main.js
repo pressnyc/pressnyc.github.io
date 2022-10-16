@@ -61,8 +61,8 @@ function makeIncidence(data, selector) {
 
     var xScale = d3.scaleTime().range([0, width]);
 
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(14),  d3.timeDate, 1 ).tickFormat( function(d) { 
-      if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeMonth.every(1),  d3.timeDate, 1 ).tickFormat( function(d) { 
+      if ( d.getDate() < 29 ) return d3.timeFormat('%b \'%y')(d)
     });
     
     var mainChart = svg
@@ -159,9 +159,8 @@ function makeIncidence(data, selector) {
   });
 
 
-
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(14),  d3.timeDate, 1 ).tickFormat( function(d) { 
-      if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeMonth.every(1),  d3.timeDate, 1 ).tickFormat( function(d) { 
+      if ( d.getDate() < 29 ) return d3.timeFormat('%b \'%y')(d)
     });
 
     svg
@@ -228,8 +227,8 @@ function makeWeeklyCases(data, selector) {
 
     var xScale = d3.scaleTime().range([0, width]);
 
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(14),  d3.timeDate, 1 ).tickFormat( function(d) { 
-      if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeMonth.every(1),  d3.timeDate, 1 ).tickFormat( function(d) { 
+      if ( d.getDate() < 29 ) return d3.timeFormat('%b \'%y')(d)
     });
     
 
@@ -311,8 +310,8 @@ function makeWeeklyCases(data, selector) {
   });
 
 
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(14),  d3.timeDate, 1 ).tickFormat( function(d) { 
-      if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeMonth.every(1),  d3.timeDate, 1 ).tickFormat( function(d) { 
+      if ( d.getDate() < 29 ) return d3.timeFormat('%b \'%y')(d)
     });
 
     svg
@@ -372,8 +371,8 @@ function hospitalization(casedata, variable, selector, height, ticks, tiptext) {
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleLinear().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(31),  d3.timeDate, 1 ).tickFormat( function(d) { 
-      if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeMonth.every(1),  d3.timeDate, 1 ).tickFormat( function(d) { 
+      if ( d.getDate() < 29 ) return d3.timeFormat('%b \'%y')(d)
     });
     
     var yAxis = d3.axisLeft(yScale).ticks( ticks );
@@ -579,8 +578,8 @@ function makeChart(data, variable, selector, limit) {
     }
 
 
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(14),  d3.timeDate, 1 ).tickFormat( function(d) { 
-      if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeMonth.every(1),  d3.timeDate, 1 ).tickFormat( function(d) { 
+      if ( d.getDate() < 29 ) return d3.timeFormat('%b \'%y')(d)
     });
     
     var yAxis = d3.axisLeft(yScale).ticks( 10 );
@@ -940,8 +939,8 @@ function hospitalization_daily(casedata, selector, height, ticks) {
     var xScale = d3.scaleTime().range([0, width]),
       yScale = d3.scaleSqrt().range([height, 0]);
 
-    var xAxis = d3.axisBottom(xScale).ticks( d3.timeDay.every(31),  d3.timeDate, 1 ).tickFormat( function(d) { 
-      if ( d.getDate() < 29 ) return d3.timeFormat('%b %e')(d)
+    var xAxis = d3.axisBottom(xScale).ticks( d3.timeMonth.every(1),  d3.timeDate, 1 ).tickFormat( function(d) { 
+      if ( d.getDate() < 29 ) return d3.timeFormat('%b \'%y')(d)
     });
     
     var yAxis = d3.axisLeft(yScale).ticks( ticks );
