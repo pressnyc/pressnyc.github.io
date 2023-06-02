@@ -721,7 +721,6 @@ function makeChart(data, variable, selector, limit) {
 d3.csv("https://raw.githubusercontent.com/pressnyc/nyc-doe-covid-interventions/main/csv/confirmed-cases-daily.csv", function (data) {
   makeChart(data,'Students','#students');
   makeChart(data,'Staff','#staff');
-  makeChart(data,'Students','#studentsLimit',30);
 });
 
 
