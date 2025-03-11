@@ -14,17 +14,18 @@
   <link rel="stylesheet" type="text/css" href="css/styles.css?2">
 </head>
 <body>
+
+
   <div class="container">
-
-
     <div class="d-flex mb-5 align-items-center">
       <a href="https://www.pressnyc.org"><img src="img/press-nyc-logo.png" width="100" height="100" class="mt-4 me-4"></a>
       <h1 class="mt-4">COVID-19 and New York City Schools</h1>
     </div>
+  </div>
 
 
-    <main>
-
+<main>
+  <div class="container">
 
       <section>
 
@@ -52,10 +53,55 @@
 
       <section>
 
-         <h2 class="mb-2">NYC Public Schools Data (Charter and DOE)</h2>
+        <h3 class="mb-2">Children Hospitalized from COVID in NYC (daily)</h3>
+
+        <div id="hospitalization-daliy" class="chart"></div>
+        <div class="key">
+        <span class="nobreak"><svg height="20" width="20"><circle cx="10" cy="10" r="5" class="dot cases_all" /></svg>Age 0–17</span>
+        </div>
+
+        <h3 class="mt-4 mb-2">Children Hospitalized from COVID in NYC (cumulative)</h3>
+
+        <div id="hospitalization" class="chart"></div>
+
+        <div class="key">
+        <span class="nobreak"><svg height="20" width="20"><circle cx="10" cy="10" r="5" class="dot cases_all" /></svg>Age 0–17</span>
+        </div>
+
+
+        <p class="source">September 13, 2021 marks the first day of school for traditional DOE students. Source: <a href="https://github.com/nychealth/coronavirus-data">NYC Coronavirus Disease 2019 (COVID-19) Data</a> <a href="https://raw.githubusercontent.com/pressnyc/coronavirus-data/master/pressnyc/csv/hospitalization-and-death.csv">hospitalization and death by age group</a>.</p>
+      </section>
+
+
+      <section>
+        <h3 class="mb-2">Child Deaths from COVID in NYC</h3>
+
+        <div id="death" class="chart"></div>
+
+        <div class="key">
+        <span class="nobreak"><svg height="20" width="20"><circle cx="10" cy="10" r="5" class="dot cases_all" /></svg>Age 0–17</span>
+        </div>
+
+        <p class="source">September 13, 2021 marks the first day of school for traditional DOE students. Source: <a href="https://github.com/nychealth/coronavirus-data">NYC Coronavirus Disease 2019 (COVID-19) Data</a> <a href="https://raw.githubusercontent.com/pressnyc/coronavirus-data/master/pressnyc/csv/hospitalization-and-death.csv">hospitalization and death by age group</a>.</p>
+      </section>
+
+
+
+
+
+  </div>
+  <div class="archive">
+  <div class="container">
+
+
+
+
+      <section>
+
+         <h2 class="mb-2">Archive of NYC Public Schools Data (Charter and DOE)</h2>
          <p class="mb-5 mt-0 text-danger"></p>
 
-        <h3 class="mb-2">Confirmed Positive COVID Student Cases</h2>
+        <h3 class="mb-2">Confirmed Positive COVID Student Cases, 2022</h2>
         <p>Cumulative since September 13, 2021</p>
 
         <div id="school-testing-cases" class="chart"></div>
@@ -67,7 +113,7 @@
 
 
       <section>
-        <h3 class="mb-2">New Positive Cases in DOE & Charter Schools (weekly)</h3>
+        <h3 class="mb-2">New Positive Cases in DOE & Charter Schools (weekly), 2021–2023</h3>
         
         <div id="new-cases-by-week-chart"></div>
 
@@ -82,14 +128,14 @@
 
 
       <section>
-        <h3>New Positive Cases in DOE & Charter School Students (daily)</h3>
+        <h3>New Positive Cases in DOE & Charter School Students (daily), 2021–2023</h3>
         <div id="students" class="chart"></div>
       </section>
 
 
 
       <section>
-        <h3>New Positive Cases in DOE & Charter School Staff (daily)</h3>
+        <h3>New Positive Cases in DOE & Charter School Staff (daily) 2021–2023</h3>
         <div id="staff" class="chart"></div>
         <p class="source">September 13, 2021 marks the first day of school for traditional DOE students. September 9, 2021 was the first day for traditional DOE school staff. Source: NYC Department of Education <a href="https://www.schools.nyc.gov/school-life/health-and-wellness/covid-information/daily-covid-case-map">Daily COVID Case Map Summary</a> scraped and archived on <a href="https://github.com/pressnyc/nyc-doe-covid-interventions">GitHub</a>.</p>
       </section>
@@ -162,43 +208,6 @@
 
 
 
-      <section>
-
-        <h3 class="mb-2">Children Hospitalized from COVID in NYC (daily)</h3>
-
-        <div id="hospitalization-daliy" class="chart"></div>
-        <div class="key">
-        <span class="nobreak"><svg height="20" width="20"><circle cx="10" cy="10" r="5" class="dot cases_all" /></svg>Age 0–17</span>
-        </div>
-
-        <h3 class="mt-4 mb-2">Children Hospitalized from COVID in NYC (cumulative)</h3>
-
-        <div id="hospitalization" class="chart"></div>
-
-        <div class="key">
-        <span class="nobreak"><svg height="20" width="20"><circle cx="10" cy="10" r="5" class="dot cases_all" /></svg>Age 0–17</span>
-        </div>
-
-
-        <p class="source">September 13, 2021 marks the first day of school for traditional DOE students. Source: <a href="https://github.com/nychealth/coronavirus-data">NYC Coronavirus Disease 2019 (COVID-19) Data</a> <a href="https://raw.githubusercontent.com/pressnyc/coronavirus-data/master/pressnyc/csv/hospitalization-and-death.csv">hospitalization and death by age group</a>.</p>
-      </section>
-
-
-      <section>
-        <h3 class="mb-2">Child Deaths from COVID in NYC</h3>
-
-        <div id="death" class="chart"></div>
-
-        <div class="key">
-        <span class="nobreak"><svg height="20" width="20"><circle cx="10" cy="10" r="5" class="dot cases_all" /></svg>Age 0–17</span>
-        </div>
-
-        <p class="source">September 13, 2021 marks the first day of school for traditional DOE students. Source: <a href="https://github.com/nychealth/coronavirus-data">NYC Coronavirus Disease 2019 (COVID-19) Data</a> <a href="https://raw.githubusercontent.com/pressnyc/coronavirus-data/master/pressnyc/csv/hospitalization-and-death.csv">hospitalization and death by age group</a>.</p>
-      </section>
-
-
-
-
 
       <section>
         <h2 class="mb-2">Average Daily Student Attendance Across DOE Schools, 2022-23</h2>
@@ -208,8 +217,10 @@
       </section>
 
 
-    </main>
+    </div>
   </div>
+
+  </main>
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script> 
@@ -218,4 +229,3 @@
 
 </body>
 </html>
-``

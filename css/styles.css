@@ -3,6 +3,10 @@ body {
   color: #330;
   background: #fffff6
 }
+.archive {
+  padding: 3rem 0;
+  background: #f3f1e3;
+}
 
 h1,h2,h3,h4,h5,h6,h7 {
   font-weight: bold;
@@ -79,8 +83,9 @@ path.domain {
 
 
 section {
-  margin: 5rem 0;
+  padding: 2.5rem 0;
 }
+
 section h2,
 section h3 {
   position: relative;
